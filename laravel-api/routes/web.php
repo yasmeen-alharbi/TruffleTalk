@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+$limiter = config('fortify.limiters.login');
+
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+    ->middleware(array_filter([
+        'guest',
+        $limiter ? 'throttle:' . $limiter : null,
+    ]))
+    ->name('login');
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->name('logout');
