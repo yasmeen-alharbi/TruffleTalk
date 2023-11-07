@@ -8,3 +8,7 @@
   - npm run android
   - npm run ios
   - npm run web
+
+**For Development**
+To use ESLint, run: `npx eslint <filename>`
+- You can add rules in `.eslintrc.js`, which is a javascript config file for the linter.
