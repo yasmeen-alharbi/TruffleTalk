@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->group(
 );
 
 if (Features::enabled(Features::registration())) {
-    Route::post(RoutePath::for('register.store', '/register'), [RegisteredUserController::class, 'store'])
-        ->middleware(['guest']);
+    Route::post('/register', [RegisteredUserController::class, 'store'])
+        ->middleware(['guest'])
+        ->name('register');
 }
