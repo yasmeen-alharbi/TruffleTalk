@@ -1,14 +1,11 @@
 # TruffleTalk
 
 ---
-To start the fronted React Native app, run these navigate to the app directory:
+To start the fronted React Native app, navigate to the app directory:
 
 - `cd react_native_app`
 
 Then run one of the following npm commands:
-- `npm start`
-
-You can open iOS, Android, or web from here, or run them directly with the commands below:
 - `npm run android`
 - `npm run ios`
 - `npm run web`
