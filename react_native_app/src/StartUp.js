@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Text, Container, Heading, Center, Column, View, Button , Box} from  'native-base'
+import { Text, Container, Heading, Center, Column, View, Button } from  'native-base'
 import { Image } from 'react-native'
 
 const StartUp = () => {
@@ -19,9 +19,14 @@ const StartUp = () => {
                             TruffleTalk is an app
                         </Text>
                     </Container>
-                    <Button mt="20" borderRadius="full"  shadow="3" variant="subtle" alignContent="center">
-                        <Text ml="5" mr="5">
-                            GET STARTED
+                    <Button mt="20" borderRadius="full"  shadow="5" variant="subtle" alignContent="center">
+                        <Text ml="7" mr="7" fontWeight="medium">
+                            REGISTER
+                        </Text>
+                    </Button>
+                    <Button  mt="5" borderRadius="full"  shadow="5" alignContent="center">
+                        <Text ml="10" mr="10" fontWeight="medium" color="white">
+                            LOGIN
                         </Text>
                     </Button>
                 </Center>
