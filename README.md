@@ -7,6 +7,7 @@
 - cd react_native_app
   - npm run android
   - npm run ios
+    - Might have to run the following command first: `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`
   - npm run web
 
 **For Development**
