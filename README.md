@@ -1,10 +1,10 @@
 # TruffleTalk
 
-To start the frontend server, navigate to the `react_native_app` directory and run one of the following npm commands**
-- npm run android
-- npm run ios
+To start the frontend server, navigate to the `react_native_app` directory and run one of the following npm commands
+- `npm run android`
+- `npm run ios`
   - Might have to run the following command first: `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`
-- npm run web
+- `npm run web`
 
 To start the backend Laravel API using Docker, install these dependencies:
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
