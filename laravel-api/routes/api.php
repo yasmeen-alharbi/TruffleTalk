@@ -1,7 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\AuthTokenController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Features;
+use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +16,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('guest')->group(
+    function () {
+        Route::post('/auth/token', [AuthTokenController::class, 'store'])
+            ->name('login');
+
+        if (Features::enabled(Features::registration())) {
+            Route::post('/register', [RegisteredUserController::class, 'store'])
+                ->name('register');
+        }
+    }
+);
+
+Route::middleware('auth:sanctum')->group(
+    function () {
+        Route::delete('/auth/token', [AuthTokenController::class, 'destroy'])
+            ->name('logout');
+
+        Route::get('/test', function () {
+            return ['data' => 'You are authenticated with Sanctum'];
+        });
+    }
+);
