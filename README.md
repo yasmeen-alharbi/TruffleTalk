@@ -1,7 +1,5 @@
 # TruffleTalk
 
-**If you don't see node_modules or package-lock.json in ./react_native_app, run `npm install` before starting the web app**
-
 To start the frontend server, navigate to the `react_native_app` directory and run one of the following npm commands**
 - npm run android
 - npm run ios
@@ -23,7 +21,3 @@ To stop the Laravel API, run:
 - To use ESLint on JS files, run: `npx eslint <filename>`
 - You can add rules in `.eslintrc.js`
 - If you don't see `node_modules` or `package-lock.json` in `./react_native_app`, run `npm install` before starting the frontend server
-
-**For Development**
-To use ESLint, run: `npx eslint <filename>`
-- You can add rules in `.eslintrc.js`, which is a javascript config file for the linter.
