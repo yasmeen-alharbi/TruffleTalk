@@ -7,9 +7,10 @@ import * as SecureStore from 'expo-secure-store'
 
 import { AuthContext } from './AuthProvider'
 import StartUp from './StartUp'
+import Home from './Home'
 
 const Router = () => {
-    const {user, setUser} = useContext(AuthContext);
+    const {user, setUser, isGuest} = useContext(AuthContext);
 
     useEffect(() => {
         SecureStore.getItemAsync('user').then(userString => {
@@ -22,7 +23,7 @@ const Router = () => {
 
     return (
         <View>
-            {user ? <Home />: <StartUp />}
+            {isGuest || user ? <Home /> : <StartUp /> }
         </View>
     );
 };

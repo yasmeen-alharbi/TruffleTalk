@@ -1,18 +1,22 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Image } from 'react-native'
 import {
     Text,
-    Container,
     Heading,
     Center,
-    Column,
     View,
     Button,
     Link,
-    Spacer
 } from  'native-base'
 
+import { AuthContext } from './AuthProvider'
+
 const StartUp = () => {
+    const { setIsGuest } = useContext(AuthContext);
+    const setGuest = () => {
+        setIsGuest(true);
+    }
+    
     return (
         <View width="100%" height="100%" pt="20" alignItems="center">
             <Center mt="5">
@@ -36,7 +40,7 @@ const StartUp = () => {
                     </Text>
                 </Button>
                 <Text mt="5"> 
-                    Just browsing? <Link _text={{color: "primary.600"}}>Continue as guest</Link>
+                    Just browsing? <Link _text={{color: "primary.600"}} onPress={setGuest}> Continue as guest</Link>
                 </Text>
             </Center>
         </View>
