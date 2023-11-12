@@ -1,6 +1,15 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { Text, Container, Heading, Center, Column, View, Button } from  'native-base'
+import React from 'react'
 import { Image } from 'react-native'
+import {
+    Text,
+    Container,
+    Heading,
+    Center,
+    Column,
+    View,
+    Button,
+    Link
+} from  'native-base'
 
 const StartUp = () => {
     return (
@@ -29,10 +38,13 @@ const StartUp = () => {
                             LOGIN
                         </Text>
                     </Button>
+                    <Text mt="5"> 
+                    Just browsing? <Link>Continue as guest</Link>
+                    </Text>
                 </Center>
             </Column>
         </View>
-    )
-}
+    );
+};
 
-export default StartUp
+export default StartUp;
