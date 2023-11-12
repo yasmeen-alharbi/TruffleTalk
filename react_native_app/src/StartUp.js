@@ -29,8 +29,8 @@ const StartUp = () => {
                         </Text>
                     </Container>
                     <Button mt="20" borderRadius="full"  shadow="5" variant="subtle" alignContent="center">
-                        <Text ml="7" mr="7" fontWeight="medium">
-                            REGISTER
+                        <Text ml="8" mr="8" fontWeight="medium">
+                            SIGN UP
                         </Text>
                     </Button>
                     <Button  mt="5" borderRadius="full"  shadow="5" alignContent="center">
