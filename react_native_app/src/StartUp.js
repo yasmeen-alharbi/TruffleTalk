@@ -15,8 +15,8 @@ const StartUp = () => {
     const { setIsGuest } = useContext(AuthContext);
     const setGuest = () => {
         setIsGuest(true);
-    }
-    
+    };
+
     return (
         <View width="100%" height="100%" pt="20" alignItems="center">
             <Center mt="5">
