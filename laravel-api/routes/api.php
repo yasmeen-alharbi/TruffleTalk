@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthTokenController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
@@ -36,5 +37,8 @@ Route::middleware('auth:sanctum')->group(
         Route::get('/test', function () {
             return ['data' => 'You are authenticated with Sanctum'];
         });
+
+        Route::post('/post', [PostController::class, 'store'])
+            ->name('post.store');
     }
 );
