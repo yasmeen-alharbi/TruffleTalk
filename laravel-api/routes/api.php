@@ -40,10 +40,6 @@ Route::middleware('auth:sanctum')->group(
         Route::delete('/auth/token', [AuthTokenController::class, 'destroy'])
             ->name('logout');
 
-        Route::get('/test', function () {
-            return ['data' => 'You are authenticated with Sanctum'];
-        });
-
         Route::post('/posts', [PostController::class, 'store'])
             ->name('posts.store');
 
