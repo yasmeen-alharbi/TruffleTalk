@@ -27,8 +27,8 @@ Route::middleware('guest')->group(
                 ->name('register');
         }
 
-        Route::get('/post/{id}', [PostController::class, 'show'])
-            ->name('post.show');
+        Route::get('/posts/{id}', [PostController::class, 'show'])
+            ->name('posts.show');
     }
 );
 
@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(
             return ['data' => 'You are authenticated with Sanctum'];
         });
 
-        Route::post('/post', [PostController::class, 'store'])
-            ->name('post.store');
+        Route::post('/posts', [PostController::class, 'store'])
+            ->name('posts.store');
     }
 );
