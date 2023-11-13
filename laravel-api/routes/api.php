@@ -27,6 +27,9 @@ Route::middleware('guest')->group(
                 ->name('register');
         }
 
+        Route::get('/posts', [PostController::class, 'index'])
+            ->name('posts.index');
+
         Route::get('/posts/{id}', [PostController::class, 'show'])
             ->name('posts.show');
     }
