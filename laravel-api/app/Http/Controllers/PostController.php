@@ -46,12 +46,13 @@ class PostController extends Controller
     /**
      * Get the post with the given id.
      *
-     * @param string $id
+     * @param int $id
      * @return PostResource[]
      */
-    public function show(string $id): array
+    public function show(int $id): array
     {
         $post = $this->post->findOrFail($id);
+
         return ['post' => new PostResource($post)];
     }
 }
