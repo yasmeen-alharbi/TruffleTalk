@@ -68,4 +68,16 @@ class PostController extends Controller
 
         return ['post' => new PostResource($post)];
     }
+
+    /**
+     * Deletes a given post.
+     *
+     * @param int $id
+     * @return void
+     */
+    public function destroy(int $id): void
+    {
+        $post = $this->post->findOrFail($id);
+        $post->delete();
+    }
 }
