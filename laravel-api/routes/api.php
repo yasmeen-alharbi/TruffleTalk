@@ -26,6 +26,9 @@ Route::middleware('guest')->group(
             Route::post('/register', [RegisteredUserController::class, 'store'])
                 ->name('register');
         }
+
+        Route::get('/post/{id}', [PostController::class, 'show'])
+            ->name('post.show');
     }
 );
 

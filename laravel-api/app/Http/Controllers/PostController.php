@@ -10,6 +10,13 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
     /**
+     * PostController constructor.
+     *
+     * @param Post $post
+     */
+    public function __construct(protected Post $post) {}
+
+    /**
      * Creates a post.
      *
      * @param Request $request
@@ -34,5 +41,17 @@ class PostController extends Controller
         $post->save();
 
         return response()->json(['post' => new PostResource($post)], 201);
+    }
+
+    /**
+     * Get the post with the given id.
+     *
+     * @param string $id
+     * @return PostResource[]
+     */
+    public function show(string $id): array
+    {
+        $post = $this->post->findOrFail($id);
+        return ['post' => new PostResource($post)];
     }
 }
