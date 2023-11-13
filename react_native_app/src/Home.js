@@ -1,23 +1,26 @@
-import React, { useContext } from 'react'
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     View,
     Center,
     Heading,
     Text,
     Button,
-} from  'native-base'
-import { AuthContext } from './AuthProvider'
+} from  'native-base';
+import { AuthContext } from './AuthProvider';
 
 const Home = () => {
     const { isGuest, setIsGuest } = useContext(AuthContext);
+    const navigate = useNavigate();
     
     const setGuest = () => {
+        navigate('/');
         setIsGuest(false);
     };
 
     return (
         <View>
-            <Center mt="5">
+            <Center pt="20">
                 <Heading size="3xl" color="primary.400">
                     Home
                 </Heading>

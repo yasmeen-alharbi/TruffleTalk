@@ -1,19 +1,25 @@
-import React, { useContext } from 'react'
-import { Image } from 'react-native'
+import React, {
+    useContext,
+} from 'react';
 import {
     Text,
     Heading,
     Center,
     View,
     Button,
-    Link,
-} from  'native-base'
+    Link
+} from  'native-base';
+import { Image } from 'react-native';
+import { useNavigate } from 'react-router-dom';
 
-import { AuthContext } from './AuthProvider'
+import { AuthContext } from './AuthProvider';
 
 const StartUp = () => {
     const { setIsGuest } = useContext(AuthContext);
+    const navigate = useNavigate();
+
     const setGuest = () => {
+        navigate('/home');
         setIsGuest(true);
     };
 

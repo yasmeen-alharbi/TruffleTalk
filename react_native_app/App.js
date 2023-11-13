@@ -1,14 +1,17 @@
-import React from 'react'
-import { NativeBaseProvider } from 'native-base'
+import React from 'react';
+import { NativeBaseProvider } from 'native-base';
+import { NativeRouter } from 'react-router-native';
 
-import { AuthProvider } from './src/AuthProvider'
-import Router from './src/Router'
+import Router from './src/Router';
+import { AuthProvider } from './src/AuthProvider';
 
 export default function App() {
   return (
     <NativeBaseProvider>
       <AuthProvider>
-        <Router />
+        <NativeRouter>
+          <Router />
+        </NativeRouter>
       </AuthProvider>
     </NativeBaseProvider>
   );
