@@ -10,7 +10,7 @@ import {
 import { AuthContext } from './AuthProvider';
 
 const Home = () => {
-    const { isGuest, setIsGuest } = useContext(AuthContext);
+    const { isGuest, setIsGuest, user } = useContext(AuthContext);
     const navigate = useNavigate();
     
     const setGuest = () => {
@@ -28,11 +28,9 @@ const Home = () => {
                     You're in the home page!
                 </Text>
                 {/* Temp for testing. TODO: cleanup */}
-                {isGuest ? 
-                    <Button onPress={setGuest}>
-                        Back to Login
-                    </Button>
-                : null }
+                <Button onPress={setGuest}>
+                    Back to Login
+                </Button>
             </Center>
         </View>
     );

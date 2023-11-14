@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import api from './util/api';
 
 export const AuthContext = React.createContext({});
 
@@ -12,7 +13,8 @@ export const AuthProvider = ({ children }) => {
             email,
             password,
             device_name: 'mobile',
-        }).then(response => {
+        })
+        .then(response => {
 
             const userResponse = {
                 email: response.data.user.email,
@@ -22,8 +24,8 @@ export const AuthProvider = ({ children }) => {
 
             setUser(userResponse);
             setError(null);
-
-        }).catch(({errors}) => {
+        })
+        .catch(({errors}) => {
             setError(errors[0]);
         });
     };
@@ -31,7 +33,6 @@ export const AuthProvider = ({ children }) => {
     const logOut = () => {
         api({token: user.token}).delete('/auth/token').then(() => {
             setUser(null);
-
             SecureStore.deleteItemAsync('user');
         }).catch(({errors}) => {
             setError(errors[0]);

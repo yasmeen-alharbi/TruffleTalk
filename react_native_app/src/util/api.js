@@ -3,7 +3,7 @@ import * as SecureStore from 'expo-secure-store'
 
 const api = ({token = null} = {}) => {
     const api = axios.create({
-        baseURL: 'http://10.0.2.2:5000/api/',
+        baseURL: 'http://localhost/api/',
     })
 
     if (token) {

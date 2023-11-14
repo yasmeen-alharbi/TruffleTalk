@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo/webpack-config": "^19.0.0",
+    "axios": "^1.6.1",
     "expo": "~49.0.15",
     "expo-secure-store": "^12.5.0",
     "expo-status-bar": "~1.6.0",
