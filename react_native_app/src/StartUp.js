@@ -1,18 +1,28 @@
-import React from 'react'
-import { Image } from 'react-native'
+import React, {
+    useContext,
+} from 'react';
 import {
     Text,
-    Container,
     Heading,
     Center,
-    Column,
     View,
     Button,
-    Link,
-    Spacer
-} from  'native-base'
+    Link
+} from  'native-base';
+import { Image } from 'react-native';
+import { useNavigate } from 'react-router-dom';
+
+import { AuthContext } from './AuthProvider';
 
 const StartUp = () => {
+    const { setIsGuest } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const setGuest = () => {
+        navigate('/home');
+        setIsGuest(true);
+    };
+
     return (
         <View width="100%" height="100%" pt="20" alignItems="center">
             <Center mt="5">
@@ -36,7 +46,7 @@ const StartUp = () => {
                     </Text>
                 </Button>
                 <Text mt="5"> 
-                    Just browsing? <Link _text={{color: "primary.600"}}>Continue as guest</Link>
+                    Just browsing? <Text underline color="primary.600" onPress={setGuest}>Continue as guest</Text>
                 </Text>
             </Center>
         </View>

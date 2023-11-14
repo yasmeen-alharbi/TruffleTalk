@@ -1,15 +1,17 @@
 import React, {
     useEffect,
     useContext
-} from 'react'
-import { View } from 'native-base'
-import * as SecureStore from 'expo-secure-store'
+} from 'react';
+import { View } from 'native-base';
+import * as SecureStore from 'expo-secure-store';
+import { Route, Routes } from 'react-router-native';
 
-import { AuthContext } from './AuthProvider'
-import StartUp from './StartUp'
+import Home from './Home';
+import StartUp from './StartUp';
+import { AuthContext } from './AuthProvider';
 
 const Router = () => {
-    const {user, setUser} = useContext(AuthContext);
+    const { user, setUser, isGuest } = useContext(AuthContext);
 
     useEffect(() => {
         SecureStore.getItemAsync('user').then(userString => {
@@ -22,7 +24,15 @@ const Router = () => {
 
     return (
         <View>
-            {user ? <Home />: <StartUp />}
+            <Routes>
+                <Route path="/" Component={StartUp} />
+                {/* TODO: eed to add an error screen*/}
+                {user || isGuest ?
+                    <Route path="/home" Component={Home} />
+                    : null
+                }
+                
+            </Routes>
         </View>
     );
 };
