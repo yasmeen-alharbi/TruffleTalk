@@ -46,7 +46,7 @@ const StartUp = () => {
                     </Text>
                 </Button>
                 <Text mt="5"> 
-                    Just browsing? <Link _text={{color: "primary.600"}} onPress={setGuest}> Continue as guest</Link>
+                    Just browsing? <Text underline color="primary.600" onPress={setGuest}>Continue as guest</Text>
                 </Text>
             </Center>
         </View>
