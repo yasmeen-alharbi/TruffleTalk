@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthTokenController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
@@ -25,6 +26,12 @@ Route::middleware('guest')->group(
             Route::post('/register', [RegisteredUserController::class, 'store'])
                 ->name('register');
         }
+
+        Route::get('/posts', [PostController::class, 'index'])
+            ->name('posts.index');
+
+        Route::get('/posts/{id}', [PostController::class, 'show'])
+            ->name('posts.show');
     }
 );
 
@@ -33,8 +40,10 @@ Route::middleware('auth:sanctum')->group(
         Route::delete('/auth/token', [AuthTokenController::class, 'destroy'])
             ->name('logout');
 
-        Route::get('/test', function () {
-            return ['data' => 'You are authenticated with Sanctum'];
-        });
+        Route::post('/posts', [PostController::class, 'store'])
+            ->name('posts.store');
+
+        Route::delete('/posts/{id}', [PostController::class, 'destroy'])
+            ->name('posts.destroy');
     }
 );

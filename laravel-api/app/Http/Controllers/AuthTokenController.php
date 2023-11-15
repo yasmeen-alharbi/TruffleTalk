@@ -12,7 +12,8 @@ class AuthTokenController extends Controller
 {
     /**
      * Creates a new authentication token for a given
-     * user if their login credentials are accurate
+     * user if their login credentials are accurate.
+     *
      * @param Request $request
      * @return array
      * @throws ValidationException
@@ -38,7 +39,8 @@ class AuthTokenController extends Controller
 
     /**
      * Deletes all authentication tokens for a given user,
-     * essentially logging them out of the API on all devices
+     * essentially logging them out of the API on all devices.
+     *
      * @param Request $request
      * @return void
      */
