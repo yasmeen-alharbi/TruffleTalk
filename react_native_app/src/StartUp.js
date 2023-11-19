@@ -30,10 +30,10 @@ const StartUp = () => {
             <Center pt="20">
                 <Center>
                     <Image style={{ width: 70, height: 70 }} source={require('./mushroom.png')} alt='Alt text'/>
-                    <Heading size="3xl" color="primary.400">
+                    <Heading size="3xl" color="primary.400" pt="3.5">
                         TruffleTalk
                     </Heading>
-                    <Text fontWeight="medium" bold>
+                    <Text fontWeight="medium" bold pt="3.5">
                         Where Myco-Minds Meet!
                     </Text>
                 </Center>
