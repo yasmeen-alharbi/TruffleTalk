@@ -1,12 +1,10 @@
 import React, {
     useEffect,
     useContext,
-    useState,
 } from 'react';
 import { View } from 'native-base';
 import * as SecureStore from 'expo-secure-store';
 import { Route, Routes } from 'react-router-native';
-import { ActivityIndicator } from 'react-native'
 
 import Home from './Home';
 import Login from './Login';
@@ -19,7 +17,8 @@ const Router = () => {
     useEffect(() => {
         SecureStore.getItemAsync('user').then(userString => {
             setUser(JSON.parse(userString));
-        }).catch(err => {
+        })
+        .catch(err => {
             console.log(err);
         });
 
