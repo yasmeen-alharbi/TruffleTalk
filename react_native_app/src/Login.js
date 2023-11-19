@@ -60,7 +60,7 @@ const Login = () => {
             setUser(userResponse);
             SecureStore.setItemAsync('user', JSON.stringify(userResponse));
 
-            navigate('/home')
+            navigate('/home');
         })
         .catch(({ errors }) => {
             setError(errors);

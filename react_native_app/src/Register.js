@@ -1,6 +1,7 @@
 import React, {
     useState,
     useEffect,
+    useContext,
     useCallback,
 } from 'react';
 import {
@@ -14,10 +15,14 @@ import {
     WarningOutlineIcon,
 } from  'native-base';
 import { useNavigate } from 'react-router-dom';
+import * as SecureStore from 'expo-secure-store';
 
 import api from './util/api';
+import { AuthContext } from './AuthProvider';
 
 const Register = () => {
+    const { setUser } = useContext(AuthContext);
+
     const [name, setName] = useState(null);
     const [username, setUsername] = useState(null);
     const [email, setEmail] = useState(null);
@@ -66,8 +71,27 @@ const Register = () => {
         })
         .then(response => {
             setError(null);
-
-            navigate('/login');
+            
+            api().post('/auth/token', {
+                email,
+                password,
+                device_name: 'mobile',
+            })
+            .then(response => {
+                const userResponse = {
+                    email: response.data.user.email,
+                    name: response.data.user.name,
+                    token: response.data.token,
+                };
+    
+                setUser(userResponse);
+                SecureStore.setItemAsync('user', JSON.stringify(userResponse));
+    
+                navigate('/home');
+            })
+            .catch((errors) => {
+                console.error(errors);
+            });
         })
         .catch(({ errors }) => {
             setError(errors);
