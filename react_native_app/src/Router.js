@@ -9,6 +9,7 @@ import { Route, Routes } from 'react-router-native';
 import Home from './Home';
 import Login from './Login';
 import StartUp from './StartUp';
+import Register from './Register';
 import { AuthContext } from './AuthProvider';
 
 const Router = () => {
@@ -29,6 +30,7 @@ const Router = () => {
             <Routes>
                 <Route path="/" Component={StartUp} />
                 <Route path="/login" Component={Login} />
+                <Route path="/register" Component={Register} />
                 {/* TODO: need to add an error screen */}
                 <Route path="/home" Component={Home} />
             </Routes>
