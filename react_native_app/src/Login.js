@@ -73,10 +73,10 @@ const Login = () => {
                 <Heading size="3xl" color="primary.400">
                     Welcome!
                 </Heading>
-                <Text fontWeight="medium" bold>
+                <Text fontWeight="medium" bold pt="3.5">
                     Login to continue
                 </Text>
-                <Center maxW="60%">
+                <Center maxW="60%" pt="3.5">
                     <FormControl isInvalid={ error?.email }>
                         <FormControl.Label>
                             Email
