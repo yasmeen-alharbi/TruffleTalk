@@ -11,13 +11,12 @@ class Like extends Model
     use HasFactory;
 
     /**
-     * The attributes that are not mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $guarded = [
+    protected $fillable = [
         'user_id',
-        'post_id',
     ];
 
     /**
