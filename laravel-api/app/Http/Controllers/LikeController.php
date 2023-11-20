@@ -18,6 +18,13 @@ class LikeController extends Controller
      */
     public function __construct(protected Like $like, protected Post $post) {}
 
+    /**
+     * Creates a user's like for a post.
+     *
+     * @param Request $request
+     * @param int $postId
+     * @return JsonResponse
+     */
     public function store(Request $request, int $postId): JsonResponse
     {
         $post = $this->post->newQuery()->where('id', $postId)->first();
