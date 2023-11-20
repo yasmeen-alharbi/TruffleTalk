@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthTokenController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -45,5 +46,8 @@ Route::middleware('auth:sanctum')->group(
 
         Route::delete('/posts/{id}', [PostController::class, 'destroy'])
             ->name('posts.destroy');
+
+        Route::post('/posts/{id}/likes', [LikeController::class, 'store'])
+            ->name('likes.store');
     }
 );
