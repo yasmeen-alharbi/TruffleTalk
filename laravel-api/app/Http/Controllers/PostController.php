@@ -51,7 +51,7 @@ class PostController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
-        $posts = $this->post->all();
+        $posts = $this->post->with('comments')->get();
 
         return PostResource::collection($posts);
     }
@@ -64,7 +64,7 @@ class PostController extends Controller
      */
     public function show(int $id): array
     {
-        $post = $this->post->findOrFail($id);
+        $post = $this->post->with('comments')->findOrFail($id);
 
         return ['post' => new PostResource($post)];
     }

@@ -26,8 +26,11 @@ class PostResource extends JsonResource
             'mushroom' => $this->mushroom,
             'description' => $this->description,
             'image' => env('APP_URL') . Storage::url($this->image),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
             'likes_count' => $likesCount,
             'liked_by_current_user' => $likedByCurrentUser,
+            'comments' => CommentResource::collection($this->comments)
         ];
     }
 }
