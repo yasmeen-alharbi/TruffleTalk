@@ -51,4 +51,15 @@ class Post extends Model
     {
         return $this->hasMany(Like::class);
     }
+
+    /**
+     * Gets the comments on the post.
+     *
+     * @return HasMany
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
 }
