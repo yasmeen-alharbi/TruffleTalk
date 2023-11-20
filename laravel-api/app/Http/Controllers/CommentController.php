@@ -62,7 +62,10 @@ class CommentController extends Controller
             'comment_id' => 'required|exists:comments,id',
         ]);
 
-        $post->comments()->where('id', $data['comment_id'])->delete();
+        $post->comments()
+            ->where('user_id', $request->user()->id)
+            ->where('id', $data['comment_id'])
+            ->delete();
 
         return response()->json(['post' => new PostResource($post)]);
     }
