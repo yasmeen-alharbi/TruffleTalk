@@ -43,4 +43,24 @@ class LikeController extends Controller
 
         return response()->json(['post' => new PostResource($post)], 201);
     }
+
+    /**
+     * Deletes a user's like on a post.
+     *
+     * @param Request $request
+     * @param int $postId
+     * @return JsonResponse
+     */
+    public function destroy(Request $request, int $postId): JsonResponse
+    {
+        $post = $this->post->newQuery()->where('id', $postId)->first();
+
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+
+        $post->likes()->where('user_id', $request->user()->id)->delete();
+
+        return response()->json(['post' => new PostResource($post)]);
+    }
 }

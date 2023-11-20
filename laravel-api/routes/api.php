@@ -49,5 +49,8 @@ Route::middleware('auth:sanctum')->group(
 
         Route::post('/posts/{id}/likes', [LikeController::class, 'store'])
             ->name('likes.store');
+
+        Route::delete('/posts/{id}/likes', [LikeController::class, 'destroy'])
+            ->name('likes.destroy');
     }
 );
