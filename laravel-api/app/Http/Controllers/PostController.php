@@ -41,6 +41,8 @@ class PostController extends Controller
         $post->user_id = $request->user()->id;
         $post->save();
 
+        $post->load('user:id,username');
+
         return response()->json(['post' => new PostResource($post)], 201);
     }
 
@@ -51,7 +53,7 @@ class PostController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
-        $posts = $this->post->with('comments')->get();
+        $posts = $this->post->with(['comments', 'user:id,username'])->get();
 
         return PostResource::collection($posts);
     }
@@ -64,7 +66,7 @@ class PostController extends Controller
      */
     public function show(int $id): array
     {
-        $post = $this->post->with('comments')->findOrFail($id);
+        $post = $this->post->with(['comments', 'user:id,username'])->findOrFail($id);
 
         return ['post' => new PostResource($post)];
     }
