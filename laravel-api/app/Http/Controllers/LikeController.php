@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PostResource;
-use App\Models\Like;
 use App\Models\Post;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,10 +12,9 @@ class LikeController extends Controller
     /**
      * LikeController constructor.
      *
-     * @param Like $like
      * @param Post $post
      */
-    public function __construct(protected Like $like, protected Post $post) {}
+    public function __construct(protected Post $post) {}
 
     /**
      * Creates a user's like for a post.
