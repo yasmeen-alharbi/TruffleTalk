@@ -22,7 +22,7 @@ const api = ({ token = null } = {}) => {
             return Promise.reject({ status: 422, errors: errors });
         }
 
-        return Promise.reject({ status: error.response?.status, errors: ['Oops!'] });
+        return Promise.reject({ status: error.response?.status, errors: error.response.data });
     })
 
     return api;
