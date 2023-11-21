@@ -74,7 +74,7 @@ const Login = () => {
         <View h="100%">
             <KeyboardAwareScrollView h="100%">
                 <Center pt="20">
-                    <Heading size="3xl" color="primary.400">
+                    <Heading size="3xl" color="primary.700">
                         Welcome!
                     </Heading>
                     <Text fontWeight="medium" bold pt="3.5">

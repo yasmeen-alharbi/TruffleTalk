@@ -100,7 +100,7 @@ const Register = () => {
         <View h="100%">
             <KeyboardAwareScrollView h="100%">
                 <Center pt="24">
-                    <Heading size="lg" color="primary.400">
+                    <Heading size="lg" color="primary.700">
                         Create a TruffleTalk Account
                     </Heading>
                     <Text fontWeight="medium" fontSize="sm" bold pt="3.5">
