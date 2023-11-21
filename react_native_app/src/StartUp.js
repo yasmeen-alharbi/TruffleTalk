@@ -11,7 +11,6 @@ import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { AuthContext } from './AuthProvider';
-import Login from './Login';
 
 const StartUp = () => {
     const { setIsGuest } = useContext(AuthContext);
