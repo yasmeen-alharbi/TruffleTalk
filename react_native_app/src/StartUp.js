@@ -26,7 +26,7 @@ const StartUp = () => {
         navigate('/login');
     };
 
-    const signup = () => {
+    const register = () => {
         navigate('/register');
     };
 
@@ -46,7 +46,7 @@ const StartUp = () => {
                     <Button _text={{fontWeight:"medium"}} borderRadius="full" mt="10" w="40" shadow="5" onPress={login}>
                         LOGIN
                     </Button>
-                    <Button mt="5" borderRadius="full" shadow="5" w="40" variant="subtle" onPress={signup}>
+                    <Button mt="5" borderRadius="full" shadow="5" w="40" variant="subtle" onPress={register}>
                         SIGNUP
                     </Button>
                 </Container>
