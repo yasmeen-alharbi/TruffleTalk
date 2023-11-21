@@ -1,6 +1,5 @@
 import React, { 
     useState,
-    useEffect,
     useContext,
     useCallback,
 } from 'react';
@@ -21,31 +20,34 @@ import api from './util/api';
 import { AuthContext } from './AuthProvider';
 
 const Login = () => {
-    const { setUser } = useContext(AuthContext);
-    const [email, setEmail] = useState(null);
-    const [password, setPassword] = useState(null);
-    const [error, setError] = useState(null);
-
     const navigate = useNavigate();
+    const { setUser } = useContext(AuthContext);
+    const [formData, setData] = useState({
+        email: null,
+        password: null,
+    });
+    const [error, setError] = useState({
+        email: null,
+        password: null,
+    });
 
-    const goBack = () => {
-        navigate('/');
-    };
+    const goBack = () => { navigate('/'); };
 
-    useEffect(() => {
-        if (error) {
-            const timer = setTimeout(() => {
-                setError(null);
-            }, 2500);
-
-            return () => clearTimeout(timer);
+    const onChange = (field, value) => {
+        if (field === 'email') {
+            setError({ ...error, email: null });
+            setData({ ...formData, email: value });
         }
-    }, [error]);
+        else if (field === 'password') {
+            setError({ ...error, password: null });
+            setData({ ...formData, password: value });
+        }
+    };
 
     const submit = useCallback(async () => {
         api().post('/auth/token', {
-            email,
-            password,
+            email: formData.email,
+            password: formData.password,
             device_name: 'mobile',
         })
         .then(response => {
@@ -81,7 +83,7 @@ const Login = () => {
                         <FormControl.Label>
                             Email
                         </FormControl.Label>
-                        <Input w="64" onChangeText={value => setEmail(value)}/>
+                        <Input w="64" onChangeText={value => onChange('email', value)}/>
                         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                             { error?.email }
                         </FormControl.ErrorMessage>
@@ -90,7 +92,7 @@ const Login = () => {
                         <FormControl.Label>
                             Password
                         </FormControl.Label>
-                        <Input w="64" type='password' onChangeText={value => setPassword(value)}/>
+                        <Input w="64" type='password' onChangeText={value => onChange('password', value)}/>
                         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                             { error?.password }
                         </FormControl.ErrorMessage>

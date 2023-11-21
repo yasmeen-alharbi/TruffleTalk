@@ -1,6 +1,5 @@
 import React, {
     useState,
-    useEffect,
     useContext,
     useCallback,
 } from 'react';
@@ -21,60 +20,58 @@ import api from './util/api';
 import { AuthContext } from './AuthProvider';
 
 const Register = () => {
-    const { setUser } = useContext(AuthContext);
-
-    const [name, setName] = useState(null);
-    const [username, setUsername] = useState(null);
-    const [email, setEmail] = useState(null);
-    const [password, setPassword] = useState(null);
-    const [confirm, setConfirm] = useState(null);
-    const [confirmError, setConfirmError] = useState(null);
-    const [error, setError] = useState(null);
-
     const navigate = useNavigate();
+    const { setUser } = useContext(AuthContext);
+    const [formData, setData] = useState({
+        name: null,
+        username: null,
+        email: null,
+        password: null,
+        confirm: null,
+    });
+    const [error, setError] = useState({
+        name: null,
+        username: null,
+        email: null,
+        password: null,
+        confirm: null,
+    });
 
-    const goBack = () => {
-        navigate('/');
-    };
+    const goBack = () => { navigate('/'); };
 
-    const goLogin = () => {
-        navigate('/login');
-    };
+    const goLogin = () => { navigate('/login'); };
 
-    const confirmPassword = (value) => {
-        if (password && password != value) {
-            setConfirmError("Passwords do not match");
-        } else {
-            setConfirm(value);
-            setConfirmError(null);
+    const onChange = (field, value) => {
+        if (field === 'name') {
+            setError({ ...error, name: null });
+            setData({ ...formData, name: value });
+        }
+        else if (field === 'username') {
+            setError({ ...error, username: null });
+            setData({ ...formData, username: value });
+        }
+        else if (field === 'email') {
+            setError({ ...error, email: null });
+            setData({ ...formData, email: value });
+        }
+        else if (field === 'password') {
+            setError({ ...error, password: null });
+            setData({ ...formData, password: value });
+        }
+        else if (field === 'password_confirmation') {
+            setError({ ...error, password_confirmation: null });
+            setData({ ...formData, password_confirmation: value });
         }
     };
-
-    useEffect(() => {
-        if (error || confirmError) {
-            const timer = setTimeout(() => {
-                setError(null);
-                setConfirmError(null);
-            }, 2500);
-
-            return () => clearTimeout(timer);
-        }
-    }, [error, confirmError]);
 
     const submit = useCallback(async () => {
-        api().post('/register', {
-            name,
-            username,
-            email,
-            password,
-            password_confirmation: confirm,
-        })
-        .then(response => {
+        api().post('/register', formData)
+        .then(() => {
             setError(null);
             
             api().post('/auth/token', {
-                email,
-                password,
+                email: formData.email,
+                password: formData.password,
                 device_name: 'mobile',
             })
             .then(response => {
@@ -113,7 +110,7 @@ const Register = () => {
                         <FormControl.Label>
                             Name
                         </FormControl.Label>
-                        <Input w="64" onChangeText={value => setName(value)}/>
+                        <Input w="64" onChangeText={value => onChange('name', value)}/>
                         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                             { error?.name }
                         </FormControl.ErrorMessage>
@@ -122,7 +119,7 @@ const Register = () => {
                         <FormControl.Label>
                             Username
                         </FormControl.Label>
-                        <Input w="64" onChangeText={value => setUsername(value)}/>
+                        <Input w="64" onChangeText={value => onChange('username', value)}/>
                         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                             { error?.username }
                         </FormControl.ErrorMessage>
@@ -131,7 +128,7 @@ const Register = () => {
                         <FormControl.Label>
                             Email
                         </FormControl.Label>
-                        <Input w="64" onChangeText={value => setEmail(value)}/>
+                        <Input w="64" onChangeText={value => onChange('email', value)}/>
                         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                             { error?.email }
                         </FormControl.ErrorMessage>
@@ -140,19 +137,16 @@ const Register = () => {
                         <FormControl.Label>
                             Password
                         </FormControl.Label>
-                        <Input w="64" type='password' onChangeText={value => setPassword(value)}/>
+                        <Input w="64" type='password' onChangeText={value => onChange('password', value)}/>
                         <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                             { error?.password }
                         </FormControl.ErrorMessage>
                     </FormControl>
-                    <FormControl isInvalid={ confirmError }>
+                    <FormControl>
                         <FormControl.Label>
                             Confirm Password
                         </FormControl.Label>
-                        <Input w="64" type='password' onChangeText={value => confirmPassword(value)}/>
-                        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                            { confirmError }
-                        </FormControl.ErrorMessage>
+                        <Input w="64" type='password' onChangeText={value => onChange('password_confirmation', value)}/>
                     </FormControl>
                     <Button _text={{fontWeight:"medium"}} borderRadius="full" mt="10" w="40" shadow="5" onPress={submit}>
                         SIGNUP
