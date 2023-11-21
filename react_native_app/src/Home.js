@@ -1,21 +1,27 @@
-import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
     View,
-    Center,
-    Heading,
     Text,
     Button,
+    Center,
+    Heading,
 } from  'native-base';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { AuthContext } from './AuthProvider';
 
 const Home = () => {
-    const { isGuest, setIsGuest } = useContext(AuthContext);
+    const { isGuest, setIsGuest, user, logOut } = useContext(AuthContext);
     const navigate = useNavigate();
     
-    const setGuest = () => {
+    const goBack = () => {
+        if (user) {
+            logOut(); // TODO: bring api call here
+        } else {
+            setIsGuest(false);
+        }
+
         navigate('/');
-        setIsGuest(false);
     };
 
     return (
@@ -28,11 +34,9 @@ const Home = () => {
                     You're in the home page!
                 </Text>
                 {/* Temp for testing. TODO: cleanup */}
-                {isGuest ? 
-                    <Button onPress={setGuest}>
-                        Back to Login
-                    </Button>
-                : null }
+                <Button onPress={goBack}>
+                    Back to Login
+                </Button>
             </Center>
         </View>
     );
