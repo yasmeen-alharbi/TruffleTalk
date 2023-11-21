@@ -43,4 +43,22 @@ class FollowerController extends Controller
 
         return response()->json(['message' => 'Successfully followed the user']);
     }
+
+    /**
+     * Unfollow a given user.
+     *
+     * @param Request $request
+     * @param int $followedId
+     * @return JsonResponse
+     */
+    public function unfollow(Request $request, int $followedId): JsonResponse
+    {
+        if (!$this->user->newQuery()->find($followedId)) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $request->user()->following()->detach($followedId);
+
+        return response()->json(['message' => 'Successfully unfollowed the user']);
+    }
 }
