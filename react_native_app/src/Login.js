@@ -95,10 +95,10 @@ const Login = () => {
                             { error?.password }
                         </FormControl.ErrorMessage>
                     </FormControl>
-                    <Button _text={{fontWeight:"medium"}} borderRadius="full" mt="10" w="40" shadow="5" variant="subtle" onPress={submit}>
+                    <Button _text={{fontWeight:"medium"}} borderRadius="full" mt="10" w="40" shadow="5" onPress={submit}>
                         LOGIN
                     </Button>
-                    <Button mt="5" borderRadius="full" shadow="5" w="40" onPress={goBack}>
+                    <Button mt="5" borderRadius="full" shadow="5" w="40" variant="subtle" onPress={goBack}>
                         BACK
                     </Button>
                 </Center>
