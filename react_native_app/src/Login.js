@@ -15,6 +15,7 @@ import {
 } from  'native-base';
 import { useNavigate } from 'react-router-dom';
 import * as SecureStore from 'expo-secure-store';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import api from './util/api';
 import { AuthContext } from './AuthProvider';
@@ -70,41 +71,43 @@ const Login = () => {
     });
 
     return (
-        <View>
-            <Center pt="20">
-                <Heading size="3xl" color="primary.400">
-                    Welcome!
-                </Heading>
-                <Text fontWeight="medium" bold pt="3.5">
-                    Login to continue
-                </Text>
-                <Center maxW="60%" pt="3.5">
-                    <FormControl isInvalid={ error?.email }>
-                        <FormControl.Label>
-                            Email
-                        </FormControl.Label>
-                        <Input w="64" onChangeText={value => onChange('email', value)}/>
-                        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                            { error?.email }
-                        </FormControl.ErrorMessage>
-                    </FormControl>
-                    <FormControl isInvalid={ error?.password }>
-                        <FormControl.Label>
-                            Password
-                        </FormControl.Label>
-                        <Input w="64" type='password' onChangeText={value => onChange('password', value)}/>
-                        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                            { error?.password }
-                        </FormControl.ErrorMessage>
-                    </FormControl>
-                    <Button _text={{fontWeight:"medium"}} borderRadius="full" mt="10" w="40" shadow="5" onPress={submit}>
-                        LOGIN
-                    </Button>
-                    <Button mt="5" borderRadius="full" shadow="5" w="40" variant="subtle" onPress={goBack}>
-                        BACK
-                    </Button>
+        <View h="100%">
+            <KeyboardAwareScrollView h="100%">
+                <Center pt="20">
+                    <Heading size="3xl" color="primary.400">
+                        Welcome!
+                    </Heading>
+                    <Text fontWeight="medium" bold pt="3.5">
+                        Login to continue
+                    </Text>
+                    <Center maxW="60%" pt="3.5">
+                        <FormControl isInvalid={ error?.email }>
+                            <FormControl.Label>
+                                Email
+                            </FormControl.Label>
+                            <Input w="64" onChangeText={value => onChange('email', value)}/>
+                            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                { error?.email }
+                            </FormControl.ErrorMessage>
+                        </FormControl>
+                        <FormControl isInvalid={ error?.password }>
+                            <FormControl.Label>
+                                Password
+                            </FormControl.Label>
+                            <Input w="64" type='password' onChangeText={value => onChange('password', value)}/>
+                            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                { error?.password }
+                            </FormControl.ErrorMessage>
+                        </FormControl>
+                        <Button _text={{fontWeight:"medium"}} borderRadius="full" mt="10" w="40" shadow="5" onPress={submit}>
+                            LOGIN
+                        </Button>
+                        <Button mt="5" borderRadius="full" shadow="5" w="40" variant="subtle" onPress={goBack}>
+                            BACK
+                        </Button>
+                    </Center>
                 </Center>
-            </Center>
+            </KeyboardAwareScrollView>
         </View>
     );
 };
