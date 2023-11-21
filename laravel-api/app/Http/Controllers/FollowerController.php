@@ -28,9 +28,15 @@ class FollowerController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
 
+        $followerUser = $request->user();
+
+        if ($followerUser->id === $followedId) {
+            return response()->json(['message' => 'Users cannot follow themselves'], 400);
+        }
+
         $now = now();
 
-        $request->user()->following()->syncWithoutDetaching([$followedId => [
+        $followerUser->following()->syncWithoutDetaching([$followedId => [
             'created_at' => $now,
             'updated_at' => $now,
         ]]);
