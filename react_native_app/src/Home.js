@@ -1,45 +1,68 @@
 import {
     Box,
+    Icon,
     View,
     Text,
     VStack,
     HStack,
+    Button,
     Divider,
     Container,
     ScrollView,
 } from  'native-base';
 import React from 'react';
 import { Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Dimensions } from 'react-native';
 
 import AppHeader from './Components/AppHeader';
 
 const Home = () => {
+    const showComments = () => {
+        console.log("lol");
+    }
+
     return (
         <View>
             <AppHeader />
-            <ScrollView w="100%" h="100%" pt="3">
+            <ScrollView w="100%" h="100%">
                 <VStack>
-                    <Container ml="3" mb="3">
-                        <HStack alignItems="center" space={56}>
-                            <Text fontSize="xl">
-                                title here
+                    <HStack pl="3" pt="3" pb="1" justifyContent="space-between" pr="3">
+                        <VStack>
+                            <Text fontSize="lg" bold>
+                                Username
                             </Text>
-                            <Text color="muted.500" >
+                            <Text fontSize="xs" italic>
+                                mushroom
+                            </Text>
+                        </VStack>
+                        <Button size={8} alignItems="center">
+                            <Icon as={<Ionicons name="add"/>} color="primary.100"/>
+                        </Button>
+                    </HStack>
+                    <Divider bg="blueGray.200" shadow="3"/>
+                    <Box>
+                        <Image style={{ width: Dimensions.get('window').width, height: Dimensions.get('window').width }} source={require('./mushroom.png')} alt='Alt text'/>
+                    </Box>
+                    <Divider bg="blueGray.200"/>
+                    <VStack pl="3" pt="3" pb="1">
+                        <HStack justifyContent="space-between" pr="3">
+                            <Text fontSize="md">
+                                Title
+                            </Text>
+                            <Text fontSize="sm" color="muted.500">
                                 19/14/22
                             </Text>
                         </HStack>
-                        <Text fontSize="xs">
-                            mushroom
-                        </Text>
-                        <HStack justifyContent="space-between" space={10}>
-                            <Text mt="3" w="80%">
-                                LOOK AT THIS COOL MUSHROOM I FOUND!!!!! :3
+                        <Container>
+                            <Text>
+                                this is my cool ass mushroom :3 whoah look at how ocook r oig  uerbigujnrgubiuvbiub
                             </Text>
-                            <Box pt="3" w="70" h="70" alignItems="center" borderColor="coolGray.600" rounded="lg" overflow="hidden" shadow={2} borderWidth="1">
-                                <Image style={{ width: 40, height: 40 }} source={require('./mushroom.png')} alt='Alt text'/>
-                            </Box>
-                        </HStack>
-                    </Container>
+                            <Text pt="2" fontSize="xs" color="muted.500" onPress={showComments}>
+                                11 comments...
+                            </Text>
+                        </Container>
+                    </VStack>
                     <Divider bg="blueGray.200"/>
                 </VStack>
             </ScrollView>
