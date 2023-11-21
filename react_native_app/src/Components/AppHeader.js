@@ -1,9 +1,9 @@
 import React, {
-    useContext
-}from 'react';
-import { 
-    HStack,
+    useContext,
+} from 'react';
+import {
     Icon,
+    HStack,
     Button,
 } from  'native-base';
 import { Image } from 'react-native';
@@ -28,20 +28,14 @@ const AppHeader = () => {
 
     return (
         <>
-            <HStack bg="primary.600" justifyContent="space-between" alignItems="center" h="32" shadow="3" pt="10" pl="7" pr="5">
-                <HStack alignItems="center">
-                    <Button variant="subtle" borderRadius="full" mr="3" size="12">
-                        <Icon as={<AntDesign name="user"/>} size="5"/>
-                    </Button>
-                </HStack>
-                <HStack>
-                    <Image style={{ width: 40, height: 40 }} source={require('../mushroom.png')} alt='Alt text'/>
-                </HStack>
-                <HStack alignItems="center">
-                    <Button>
-                            <Icon as={<Entypo name="log-out"/>} size="7" color="primary.100" onPress={goBack}/>
-                    </Button>
-                </HStack>
+            <HStack bg="primary.600" justifyContent="space-between" alignItems="center" h="32" shadow="3" pt="12" pl="7" pr="5">
+                <Button variant="subtle" borderRadius="full" size="12">
+                    <Icon as={<AntDesign name="user"/>} size="5"/>
+                </Button>
+                <Image style={{ width: 70, height: 50 }} source={require('../mushroom.png')} alt='Alt text'/>
+                <Button>
+                        <Icon as={<Entypo name="log-out"/>} size="7" color="primary.100" onPress={goBack}/>
+                </Button>
             </HStack>
         </>
     );
