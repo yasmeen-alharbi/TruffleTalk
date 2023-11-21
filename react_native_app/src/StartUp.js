@@ -11,6 +11,7 @@ import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { AuthContext } from './AuthProvider';
+import Login from './Login';
 
 const StartUp = () => {
     const { setIsGuest } = useContext(AuthContext);
@@ -25,7 +26,7 @@ const StartUp = () => {
         navigate('/login');
     };
 
-    const signup = () => {
+    const register = () => {
         navigate('/register');
     };
 
@@ -42,11 +43,11 @@ const StartUp = () => {
                     </Text>
                 </Center>
                 <Container maxW="60%">
-                    <Button _text={{fontWeight:"medium"}} borderRadius="full" mt="10" w="40" shadow="5" variant="subtle" onPress={signup}>
-                        SIGN UP
-                    </Button>
-                    <Button mt="5" borderRadius="full" shadow="5" w="40" onPress={login}>
+                    <Button _text={{fontWeight:"medium"}} borderRadius="full" mt="10" w="40" shadow="5" onPress={login}>
                         LOGIN
+                    </Button>
+                    <Button mt="5" borderRadius="full" shadow="5" w="40" variant="subtle" onPress={register}>
+                        SIGNUP
                     </Button>
                 </Container>
                 <Text mt="5"> 

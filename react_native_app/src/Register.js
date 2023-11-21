@@ -1,6 +1,5 @@
 import React, {
     useState,
-    useEffect,
     useContext,
     useCallback,
 } from 'react';
@@ -16,65 +15,64 @@ import {
 } from  'native-base';
 import { useNavigate } from 'react-router-dom';
 import * as SecureStore from 'expo-secure-store';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import api from './util/api';
 import { AuthContext } from './AuthProvider';
 
 const Register = () => {
-    const { setUser } = useContext(AuthContext);
-
-    const [name, setName] = useState(null);
-    const [username, setUsername] = useState(null);
-    const [email, setEmail] = useState(null);
-    const [password, setPassword] = useState(null);
-    const [confirm, setConfirm] = useState(null);
-    const [confirmError, setConfirmError] = useState(null);
-    const [error, setError] = useState(null);
-
     const navigate = useNavigate();
+    const { setUser } = useContext(AuthContext);
+    const [formData, setData] = useState({
+        name: null,
+        username: null,
+        email: null,
+        password: null,
+        confirm: null,
+    });
+    const [error, setError] = useState({
+        name: null,
+        username: null,
+        email: null,
+        password: null,
+        confirm: null,
+    });
 
-    const goBack = () => {
-        navigate('/');
-    };
+    const goBack = () => { navigate('/'); };
 
-    const goLogin = () => {
-        navigate('/login');
-    };
+    const goLogin = () => { navigate('/login'); };
 
-    const confirmPassword = (value) => {
-        if (password && password != value) {
-            setConfirmError("Passwords do not match");
-        } else {
-            setConfirm(value);
-            setConfirmError(null);
+    const onChange = (field, value) => {
+        if (field === 'name') {
+            setError({ ...error, name: null });
+            setData({ ...formData, name: value });
+        }
+        else if (field === 'username') {
+            setError({ ...error, username: null });
+            setData({ ...formData, username: value });
+        }
+        else if (field === 'email') {
+            setError({ ...error, email: null });
+            setData({ ...formData, email: value });
+        }
+        else if (field === 'password') {
+            setError({ ...error, password: null });
+            setData({ ...formData, password: value });
+        }
+        else if (field === 'password_confirmation') {
+            setError({ ...error, password_confirmation: null });
+            setData({ ...formData, password_confirmation: value });
         }
     };
-
-    useEffect(() => {
-        if (error || confirmError) {
-            const timer = setTimeout(() => {
-                setError(null);
-                setConfirmError(null);
-            }, 2500);
-
-            return () => clearTimeout(timer);
-        }
-    }, [error, confirmError]);
 
     const submit = useCallback(async () => {
-        api().post('/register', {
-            name,
-            username,
-            email,
-            password,
-            password_confirmation: confirm,
-        })
-        .then(response => {
+        api().post('/register', formData)
+        .then(() => {
             setError(null);
             
             api().post('/auth/token', {
-                email,
-                password,
+                email: formData.email,
+                password: formData.password,
                 device_name: 'mobile',
             })
             .then(response => {
@@ -99,72 +97,71 @@ const Register = () => {
     });
 
     return (
-        <View>
-            <Center pt="24">
-                <Heading size="lg" color="primary.400">
-                    Create a TruffleTalk Account
-                </Heading>
-                <Text fontWeight="medium" fontSize="sm" bold pt="3.5">
-                    Ready to Share Your Adventures?
-                </Text>
-                <Text fontWeight="medium" fontSize="sm">Register for Full Access!</Text>
-                <Center maxW="70%" pt="3.5">
-                    <FormControl isInvalid={ error?.name }>
-                        <FormControl.Label>
-                            Name
-                        </FormControl.Label>
-                        <Input w="64" onChangeText={value => setName(value)}/>
-                        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                            { error?.name }
-                        </FormControl.ErrorMessage>
-                    </FormControl>
-                    <FormControl isInvalid={ error?.username }>
-                        <FormControl.Label>
-                            Username
-                        </FormControl.Label>
-                        <Input w="64" onChangeText={value => setUsername(value)}/>
-                        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                            { error?.username }
-                        </FormControl.ErrorMessage>
-                    </FormControl>
-                    <FormControl isInvalid={ error?.email }>
-                        <FormControl.Label>
-                            Email
-                        </FormControl.Label>
-                        <Input w="64" onChangeText={value => setEmail(value)}/>
-                        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                            { error?.email }
-                        </FormControl.ErrorMessage>
-                    </FormControl>
-                    <FormControl isInvalid={ error?.password }>
-                        <FormControl.Label>
-                            Password
-                        </FormControl.Label>
-                        <Input w="64" type='password' onChangeText={value => setPassword(value)}/>
-                        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                            { error?.password }
-                        </FormControl.ErrorMessage>
-                    </FormControl>
-                    <FormControl isInvalid={ confirmError }>
-                        <FormControl.Label>
-                            Confirm Password
-                        </FormControl.Label>
-                        <Input w="64" type='password' onChangeText={value => confirmPassword(value)}/>
-                        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                            { confirmError }
-                        </FormControl.ErrorMessage>
-                    </FormControl>
-                    <Button _text={{fontWeight:"medium"}} borderRadius="full" mt="10" w="40" shadow="5" variant="subtle" onPress={submit}>
-                        SIGNUP
-                    </Button>
-                    <Button mt="5" borderRadius="full" shadow="5" w="40" onPress={goBack}>
-                        BACK
-                    </Button>
-                    <Text mt="5"> 
-                        Already have an account? <Text underline color="primary.600" onPress={goLogin}>Login here</Text>
+        <View h="100%">
+            <KeyboardAwareScrollView h="100%">
+                <Center pt="24">
+                    <Heading size="lg" color="primary.400">
+                        Create a TruffleTalk Account
+                    </Heading>
+                    <Text fontWeight="medium" fontSize="sm" bold pt="3.5">
+                        Ready to Share Your Adventures?
                     </Text>
+                    <Text fontWeight="medium" fontSize="sm">Register for Full Access!</Text>
+                    <Center maxW="70%" pt="3.5">
+                        <FormControl isInvalid={ error?.name }>
+                            <FormControl.Label>
+                                Name
+                            </FormControl.Label>
+                            <Input w="64" onChangeText={value => onChange('name', value)}/>
+                            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                { error?.name }
+                            </FormControl.ErrorMessage>
+                        </FormControl>
+                        <FormControl isInvalid={ error?.username }>
+                            <FormControl.Label>
+                                Username
+                            </FormControl.Label>
+                            <Input w="64" onChangeText={value => onChange('username', value)}/>
+                            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                { error?.username }
+                            </FormControl.ErrorMessage>
+                        </FormControl>
+                        <FormControl isInvalid={ error?.email }>
+                            <FormControl.Label>
+                                Email
+                            </FormControl.Label>
+                            <Input w="64" onChangeText={value => onChange('email', value)}/>
+                            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                { error?.email }
+                            </FormControl.ErrorMessage>
+                        </FormControl>
+                        <FormControl isInvalid={ error?.password }>
+                            <FormControl.Label>
+                                Password
+                            </FormControl.Label>
+                            <Input w="64" type='password' onChangeText={value => onChange('password', value)}/>
+                            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                { error?.password }
+                            </FormControl.ErrorMessage>
+                        </FormControl>
+                        <FormControl>
+                            <FormControl.Label>
+                                Confirm Password
+                            </FormControl.Label>
+                            <Input w="64" type='password' onChangeText={value => onChange('password_confirmation', value)}/>
+                        </FormControl>
+                        <Button _text={{fontWeight:"medium"}} borderRadius="full" mt="10" w="40" shadow="5" onPress={submit}>
+                            SIGNUP
+                        </Button>
+                        <Button mt="5" borderRadius="full" shadow="5" w="40" variant="subtle" onPress={goBack}>
+                            BACK
+                        </Button>
+                        <Text mt="5"> 
+                            Already have an account? <Text underline color="primary.600" onPress={goLogin}>Login here</Text>
+                        </Text>
+                    </Center>
                 </Center>
-            </Center>
+            </KeyboardAwareScrollView>
         </View>
     );
 };
