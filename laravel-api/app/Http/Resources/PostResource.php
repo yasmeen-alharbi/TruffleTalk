@@ -16,8 +16,9 @@ class PostResource extends JsonResource
     public function toArray(Request $request): array
     {
         $user = $request->user();
-        $likesCount = $this->likes->count();
+
         $likedByCurrentUser = $user ? $this->likes->contains('user_id', $user->id) : false;
+        $followedByCurrentUser = $user ? $user->following()->where('followed_id', $this->user_id)->exists() : false;
 
         return [
             'id' => $this->id,
@@ -29,7 +30,8 @@ class PostResource extends JsonResource
             'image' => env('APP_URL') . Storage::url($this->image),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'likes_count' => $likesCount,
+            'followed_by_current_user' => $followedByCurrentUser,
+            'likes_count' => $this->likes->count(),
             'liked_by_current_user' => $likedByCurrentUser,
             'comments' => CommentResource::collection($this->comments)
         ];
