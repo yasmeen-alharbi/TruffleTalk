@@ -7,18 +7,14 @@ import {
     Container
 } from 'native-base';
 import { Image } from 'react-native';
-import React, { useContext } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { AuthContext } from './AuthProvider';
-
 const StartUp = () => {
-    const { setIsGuest } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const setGuest = () => {
         navigate('/home');
-        setIsGuest(true);
     };
 
     const login = () => {

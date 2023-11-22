@@ -13,7 +13,7 @@ import Register from './Register';
 import { AuthContext } from './AuthProvider';
 
 const Router = () => {
-    const { user, setUser, isGuest } = useContext(AuthContext);
+    const { setUser } = useContext(AuthContext);
 
     useEffect(() => {
         SecureStore.getItemAsync('user').then(userString => {

@@ -7,7 +7,6 @@ export const AuthContext = React.createContext({});
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [isGuest, setIsGuest] = useState(false);
     const [error, setError] = useState(null);
 
     const logOut = () => { // TODO: move later
@@ -21,7 +20,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, setUser, error, logOut, isGuest, setIsGuest }}>
+        <AuthContext.Provider value={{ user, setUser, error, logOut, }}>
             { children }
         </AuthContext.Provider>
     );
