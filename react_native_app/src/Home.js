@@ -16,6 +16,7 @@ import api from './util/api';
 import Post from './Components/Post';
 import { AuthContext } from './AuthProvider';
 import AppHeader from './Components/AppHeader';
+import AppFooter from './Components/AppFooter';
 
 const Home = () => {
     const { user } = useContext(AuthContext);
@@ -89,8 +90,8 @@ const Home = () => {
                         {data.map((data) => (
                             <Post key={ data.id } data={ data } likePost={ () => likePost(data.id) } showComments={ showComments } />
                         ))}
-                        <VStack h="8"></VStack>
                     </ScrollView>
+                    <AppFooter />
                 </>
             )}
         </View>

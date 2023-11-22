@@ -6,11 +6,11 @@ import {
     Button,
     HStack,
     Divider,
-} from "native-base";
+} from 'native-base';
 import moment from 'moment/moment';
 import React, { useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { Dimensions, Image } from "react-native";
+import { Dimensions, Image } from 'react-native';
 
 import { AuthContext } from '../AuthProvider';
 
@@ -45,7 +45,7 @@ const Post = ({ data, likePost, showComments }) => {
                     <Image style={{ width: Dimensions.get('window').width, height: Dimensions.get('window').width }} source={{ uri: data.image }} alt='Alt text'/>
                 </Box>
                 <Divider bg="blueGray.200"/>
-                <VStack pl="3" pt="3" pb="1">
+                <VStack pl="3" pt="3" pb="2">
                     <HStack justifyContent="space-between" pr="3">
                         <Text fontSize="md" bold>
                             { data.title }
