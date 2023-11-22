@@ -47,7 +47,7 @@ class PostController extends Controller
     }
 
     /**
-     * Gets all the posts, sorted by top-rated post.
+     * Gets all the posts; sorted by top-rated post.
      * Will be used by guests.
      *
      * @return AnonymousResourceCollection
@@ -64,7 +64,7 @@ class PostController extends Controller
     }
 
     /**
-     * Gets all user's followed posts, sorted chronologically.
+     * Gets all user's followed posts; sorted chronologically.
      *
      * @param Request $request
      * @return AnonymousResourceCollection
@@ -79,7 +79,6 @@ class PostController extends Controller
         }
 
         $followingIds = $currentUser->following()->pluck('followed_id')->toArray();
-        $followingIds[] = $currentUser->id;
 
         $followedPosts = $this->post->newQuery()
             ->with(['comments', 'user:id,username'])
@@ -95,7 +94,8 @@ class PostController extends Controller
 
     /**
      * Gets recommended posts from users that the user is not
-     * following, sorts by top-rated.
+     * following based on mushroom types that the user has
+     * interacted with before; sorts by top-rated.
      *
      * @param Request $request
      * @return AnonymousResourceCollection
@@ -103,25 +103,42 @@ class PostController extends Controller
     public function recommended(Request $request): AnonymousResourceCollection
     {
         $currentUser = $request->user();
-        $afterTimestamp = null;
 
-        if ($request->filled('after')) {
-            $afterTimestamp = $request->input('after');
-        }
+        $likedPostIds = $currentUser->likes()->pluck('post_id')->toArray();
+        $commentedPostIds = $currentUser->comments()->pluck('post_id')->toArray();
 
-        $followingIds = $currentUser->following()->pluck('followed_id')->toArray();
-        $followedPostsIds = $this->post->newQuery()->whereIn('user_id', $followingIds)->pluck('id')->toArray();
+        $postsOfInterest = array_unique(array_merge($likedPostIds, $commentedPostIds));
+        $mushroomsOfInterest = $this->post->newQuery()->whereIn('id', $postsOfInterest)
+            ->distinct('mushroom')
+            ->pluck('mushroom')
+            ->toArray();
 
-        $recommendedPosts = $this->post->newQuery()
-            ->with(['comments', 'user:id,username'])
-            ->when($afterTimestamp, function ($query) use ($afterTimestamp) {
-                $query->where('created_at', '>', $afterTimestamp);
+        if (empty($postsOfInterest) || empty($mushroomsOfInterest)) {
+            $recommendedPosts = $this->post->newQuery()
+                ->whereNotIn('user_id', function ($query) use ($currentUser) {
+                $query->select('followed_id')
+                    ->from('followers')
+                    ->where('follower_id', $currentUser->id);
             })
-            ->whereNotIn('user_id', [$currentUser->id])
-            ->whereNotIn('id', $followedPostsIds)
-            ->withCount(['likes', 'comments'])
-            ->orderByRaw('(likes_count + (3 * comments_count)) DESC')
-            ->get();
+                ->where('user_id', '!=', $currentUser->id)
+                ->withCount(['likes', 'comments'])
+                ->orderByRaw('(likes_count + (3 * comments_count)) DESC')
+                ->take(100)
+                ->get();
+        } else {
+            $recommendedPosts = $this->post->newQuery()
+                ->with(['comments', 'user:id,username'])
+                ->whereIn('mushroom', $mushroomsOfInterest)
+                ->where('user_id', '!=', $currentUser->id)
+                ->whereNotIn('user_id', function ($query) use ($currentUser) {
+                    $query->select('followed_id')
+                        ->from('followers')
+                        ->where('follower_id', $currentUser->id);
+                })
+                ->withCount(['likes', 'comments'])
+                ->orderByRaw('(likes_count + (3 * comments_count)) DESC')
+                ->get();
+        }
 
         return PostResource::collection($recommendedPosts);
     }
