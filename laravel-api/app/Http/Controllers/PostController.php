@@ -79,6 +79,7 @@ class PostController extends Controller
         }
 
         $followingIds = $currentUser->following()->pluck('followed_id')->toArray();
+        $followingIds[] = $currentUser->id;
 
         $followedPosts = $this->post->newQuery()
             ->with(['comments', 'user:id,username'])
