@@ -107,14 +107,15 @@ class PostController extends Controller
 
         $likedPostIds = $currentUser->likes()->pluck('post_id')->toArray();
         $commentedPostIds = $currentUser->comments()->pluck('post_id')->toArray();
-
         $postsOfInterest = array_unique(array_merge($likedPostIds, $commentedPostIds));
-        $mushroomsOfInterest = $this->post->newQuery()->whereIn('id', $postsOfInterest)
+
+        $mushroomsOfInterest = $this->post->newQuery()
+            ->whereIn('id', $postsOfInterest)
             ->distinct('mushroom')
             ->pluck('mushroom')
             ->toArray();
 
-        if (empty($postsOfInterest) || empty($mushroomsOfInterest)) {
+        if (empty($postsOfInterest)) {
             $recommendedPosts = $this->post->newQuery()
                 ->whereNotIn('user_id', function ($query) use ($currentUser) {
                 $query->select('followed_id')
@@ -138,7 +139,22 @@ class PostController extends Controller
                 })
                 ->withCount(['likes', 'comments'])
                 ->orderByRaw('(likes_count + (3 * comments_count)) DESC')
+                ->take(100)
                 ->get();
+
+            if ($recommendedPosts->isEmpty()) {
+                $recommendedPosts = $this->post->newQuery()
+                    ->whereNotIn('user_id', function ($query) use ($currentUser) {
+                        $query->select('followed_id')
+                            ->from('followers')
+                            ->where('follower_id', $currentUser->id);
+                    })
+                    ->where('user_id', '!=', $currentUser->id)
+                    ->withCount(['likes', 'comments'])
+                    ->orderByRaw('(likes_count + (3 * comments_count)) DESC')
+                    ->take(100)
+                    ->get();
+            }
         }
 
         return PostResource::collection($recommendedPosts);
