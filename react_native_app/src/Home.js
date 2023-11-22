@@ -1,7 +1,7 @@
 import React, {
-    useContext,
-    useEffect,
     useState,
+    useEffect,
+    useContext,
 } from 'react';
 import {
     View,
@@ -32,18 +32,45 @@ const Home = () => {
             console.error(errors);
             setLoading(false);
         });
-
     }, []);
     
     const showComments = () => {
         console.log("show comments");
     };
 
-    const likePost = () => {
-        console.log('like/unlike');
+    const likePost = (postID) => {
+        const post = data.filter(obj => {
+            return obj.id === postID;
+        });
+
+        if (!post[0].liked_by_current_user) {
+            api({ token: user.token }).post(`/posts/${postID}/likes`)
+                .then(() => {
+                    setData(data.map((prevData) =>
+                        prevData.id === postID
+                        ? {...prevData, liked_by_current_user: true, likes_count: prevData.likes_count + 1}
+                        : prevData
+                    ));
+                })
+                .catch(error => {
+                    console.error(error);
+                })
+        }
+        else {
+            api({ token: user.token }).delete(`/posts/${postID}/likes`)
+                .then(() => {
+                    setData(data.map((prevData) =>
+                        prevData.id === postID
+                            ? {...prevData, liked_by_current_user: false, likes_count: prevData.likes_count - 1}
+                            : prevData
+                    ));
+                })
+                .catch(error => {
+                    console.error(error);
+                })
+        }
     };
 
-    // TODO: add pb={10} to the last post displayed
     return (
         <View h="100%">
             {loading ? (
@@ -59,8 +86,8 @@ const Home = () => {
                 <>
                     <AppHeader />
                     <ScrollView w="100%" h="100%">
-                        {data.map((data, id) => (
-                            <Post key={ id } data={ data } likePost={ likePost } showComments={ showComments } />
+                        {data.map((data) => (
+                            <Post key={ data.id } data={ data } likePost={ () => likePost(data.id) } showComments={ showComments } />
                         ))}
                         <VStack h="8"></VStack>
                     </ScrollView>
