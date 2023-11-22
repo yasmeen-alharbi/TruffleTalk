@@ -62,6 +62,7 @@ const Home = () => {
                         {data.map((data, id) => (
                             <Post key={ id } data={ data } likePost={ likePost } showComments={ showComments } />
                         ))}
+                        <VStack h="8"></VStack>
                     </ScrollView>
                 </>
             )}
