@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthTokenController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FollowerController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -45,5 +48,23 @@ Route::middleware('auth:sanctum')->group(
 
         Route::delete('/posts/{id}', [PostController::class, 'destroy'])
             ->name('posts.destroy');
+
+        Route::post('/posts/{id}/likes', [LikeController::class, 'store'])
+            ->name('likes.store');
+
+        Route::delete('/posts/{id}/likes', [LikeController::class, 'destroy'])
+            ->name('likes.destroy');
+
+        Route::post('/posts/{id}/comments', [CommentController::class, 'store'])
+            ->name('comments.store');
+
+        Route::delete('/posts/{id}/comments', [CommentController::class, 'destroy'])
+            ->name('comments.destroy');
+
+        Route::post('/users/{id}/follow', [FollowerController::class, 'follow'])
+            ->name('users.follow');
+
+        Route::delete('/users/{id}/unfollow', [FollowerController::class, 'unfollow'])
+            ->name('users.unfollow');
     }
 );
