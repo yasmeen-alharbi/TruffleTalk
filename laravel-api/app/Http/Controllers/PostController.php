@@ -57,7 +57,7 @@ class PostController extends Controller
         $posts = $this->post->newQuery()
             ->with(['comments', 'user:id,username'])
             ->withCount(['likes', 'comments'])
-            ->orderByRaw('likes_count + comments_count DESC')
+            ->orderByRaw('(likes_count + (3 * comments_count)) DESC')
             ->get();
 
         return PostResource::collection($posts);
