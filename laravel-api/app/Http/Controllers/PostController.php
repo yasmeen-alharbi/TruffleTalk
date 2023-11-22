@@ -72,12 +72,20 @@ class PostController extends Controller
     public function followed(Request $request): AnonymousResourceCollection
     {
         $currentUser = $request->user();
+        $afterTimestamp = null;
+
+        if ($request->filled('after')) {
+            $afterTimestamp = $request->input('after');
+        }
 
         $followingIds = $currentUser->following()->pluck('followed_id')->toArray();
         $followingIds[] = $currentUser->id;
 
         $followedPosts = $this->post->newQuery()
             ->with(['comments', 'user:id,username'])
+            ->when($afterTimestamp, function ($query) use ($afterTimestamp) {
+                $query->where('created_at', '>', $afterTimestamp);
+            })
             ->whereIn('user_id', $followingIds)
             ->orderBy('created_at','DESC')
             ->get();
@@ -95,12 +103,20 @@ class PostController extends Controller
     public function recommended(Request $request): AnonymousResourceCollection
     {
         $currentUser = $request->user();
+        $afterTimestamp = null;
+
+        if ($request->filled('after')) {
+            $afterTimestamp = $request->input('after');
+        }
 
         $followingIds = $currentUser->following()->pluck('followed_id')->toArray();
         $followedPostsIds = $this->post->newQuery()->whereIn('user_id', $followingIds)->pluck('id')->toArray();
 
         $recommendedPosts = $this->post->newQuery()
             ->with(['comments', 'user:id,username'])
+            ->when($afterTimestamp, function ($query) use ($afterTimestamp) {
+                $query->where('created_at', '>', $afterTimestamp);
+            })
             ->whereNotIn('user_id', [$currentUser->id])
             ->whereNotIn('id', $followedPostsIds)
             ->withCount(['likes', 'comments'])
