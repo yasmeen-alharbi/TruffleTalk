@@ -12,9 +12,9 @@ export const AuthProvider = ({ children }) => {
     const logOut = () => { // TODO: move later
         api({ token: user.token }).delete('/auth/token').then(() => {
             setUser(null);
-
             SecureStore.deleteItemAsync('user');
         }).catch(({ errors }) => {
+            setUser(null);
             setError(errors);
         });
     };
