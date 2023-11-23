@@ -7,19 +7,14 @@ import {
     Container
 } from 'native-base';
 import { Image } from 'react-native';
-import React, { useContext } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { AuthContext } from './AuthProvider';
-import Login from './Login';
-
 const StartUp = () => {
-    const { setIsGuest } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const setGuest = () => {
         navigate('/home');
-        setIsGuest(true);
     };
 
     const login = () => {
@@ -34,8 +29,8 @@ const StartUp = () => {
         <View>
             <Center pt="20">
                 <Center>
-                    <Image style={{ width: 70, height: 70 }} source={require('./mushroom.png')} alt='Alt text'/>
-                    <Heading size="3xl" color="primary.400" pt="3.5">
+                    <Image style={{ width: 110, height: 80 }} source={require('./mushroom.png')} alt='Alt text'/>
+                    <Heading size="3xl" color="primary.700" pt="3.5">
                         TruffleTalk
                     </Heading>
                     <Text fontWeight="medium" bold pt="3.5">
