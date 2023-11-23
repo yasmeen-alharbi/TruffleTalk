@@ -61,6 +61,12 @@ Route::middleware('auth:sanctum')->group(
         Route::delete('/posts/{id}/comments', [CommentController::class, 'destroy'])
             ->name('comments.destroy');
 
+        Route::get('/followed/posts', [PostController::class, 'followed'])
+            ->name('posts.followed');
+
+        Route::get('/recommended/posts', [PostController::class, 'recommended'])
+            ->name('posts.recommended');
+
         Route::post('/users/{id}/follow', [FollowerController::class, 'follow'])
             ->name('users.follow');
 
