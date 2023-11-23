@@ -72,11 +72,7 @@ class PostController extends Controller
     public function followed(Request $request): AnonymousResourceCollection
     {
         $currentUser = $request->user();
-        $afterTimestamp = null;
-
-        if ($request->filled('after')) {
-            $afterTimestamp = $request->input('after');
-        }
+        $afterTimestamp = $currentUser->last_posts_fetched_at;
 
         $followingIds = $currentUser->following()->pluck('followed_id')->toArray();
         $followingIds[] = $currentUser->id;
@@ -89,6 +85,9 @@ class PostController extends Controller
             ->whereIn('user_id', $followingIds)
             ->orderBy('created_at','DESC')
             ->get();
+
+        $currentUser->last_posts_fetched_at = now();
+        $currentUser->save();
 
         return PostResource::collection($followedPosts);
     }
