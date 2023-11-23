@@ -9,14 +9,14 @@ import {
 } from 'native-base';
 import moment from 'moment/moment';
 import React, { useContext } from 'react';
+import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Dimensions, Image } from 'react-native';
 
 import { AuthContext } from '../AuthProvider';
 
 const Post = ({ data, likePost, showComments }) => {
-    const { isGuest } = useContext(AuthContext);
-
+    const { user } = useContext(AuthContext);
     const date = moment(data.created_at);
     const formattedDate = date.utc().format('DD/MM/YY');
 
@@ -32,10 +32,10 @@ const Post = ({ data, likePost, showComments }) => {
                             { data.mushroom }
                         </Text>
                     </VStack>
-                    { !isGuest ? (
+                    { user && user.id !== data.user_id ? (
                         <>
-                            <Button size={8} alignItems="center">
-                                <Icon as={<Ionicons name="add"/>} size="5" color="primary.50"/>
+                            <Button size={10} alignItems="center">
+                                <Icon as={<Feather name={`${data.followed_by_current_user ? "user-check" : "user-plus"}`}/>} size="5" color="primary.50"/>
                             </Button>
                         </>
                     ) : null}
@@ -64,7 +64,7 @@ const Post = ({ data, likePost, showComments }) => {
                             </Text>
                             <HStack justifyContent="space-between" space={1}>
                                 <Text fontSize="md" color="muted.500">{ data.likes_count }</Text>
-                                { isGuest ? (
+                                { !user || user.id === data.user_id ? (
                                     <Text fontSize="md" color="muted.500"> {`${data.likes_count === 1 ? 'Like' : 'Likes'}`} </Text>
                                 ) : (
                                     <Ionicons name={`${data.liked_by_current_user ? "heart-sharp" : "heart-outline"}`} size={24} color={`${data.liked_by_current_user ? "red" : "grey"}`} onPress={likePost}/>

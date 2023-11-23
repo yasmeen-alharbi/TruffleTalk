@@ -4,6 +4,7 @@ import {
     HStack,
 } from 'native-base';
 import React, { useContext } from 'react';
+import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import  {useNavigate } from 'react-router-dom';
@@ -11,14 +12,12 @@ import  {useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthProvider';
 
 const AppFooter = () => {
-    const { setIsGuest, user, logOut } = useContext(AuthContext);
+    const { user, logOut } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const goBack = () => {
         if (user) {
             logOut(); // TODO: bring api call here
-        } else {
-            setIsGuest(false);
         }
         navigate('/');
     };
@@ -33,7 +32,7 @@ const AppFooter = () => {
                     <Icon as={<Ionicons name="add"/>} size="12" color="primary.50"/>
                 </Button>
                 <Button onPress={goBack}>
-                    <Icon as={<AntDesign name="user"/>} size="8" color="primary.50"/>
+                    <Icon as={<Feather name="user"/>} size="8" color="primary.50"/>
                 </Button>
             </HStack>
         </>
