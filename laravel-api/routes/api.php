@@ -67,6 +67,9 @@ Route::middleware('auth:sanctum')->group(
         Route::get('/recommended/posts', [PostController::class, 'recommended'])
             ->name('posts.recommended');
 
+        Route::get('/users', [UserController::class, 'index'])
+            ->name('users.index');
+
         Route::post('/users/{id}/follow', [FollowerController::class, 'follow'])
             ->name('users.follow');
 
