@@ -38,6 +38,6 @@ class UserController extends Controller
             })
             ->get();
 
-        return UserResource::collection($users, );
+        return UserResource::collection($users);
     }
 }
