@@ -1,5 +1,6 @@
 import React, {
     useState,
+    useContext,
     useCallback,
 } from 'react';
 import {
@@ -22,6 +23,8 @@ import { useNavigate } from 'react-router-dom';
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
+import api from './util/api';
+import { AuthContext } from './AuthProvider';
 import AppHeader from './Components/AppHeader';
 import AppFooter from './Components/AppFooter';
 
@@ -29,14 +32,17 @@ const CreatePost = () => {
 
     const MUSHROOMS = ['mushroom1', 'mushroom2', 'mushroom3']; // TODO: might be temporary
 
+    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [image, setImage] = useState(null);
 
-    const [formData, setData] = useState({
+    const [data, setData] = useState({
         title: null,
         mushroom: '',
         description: null,
         image: '',
     });
+
     const [error, setError] = useState({
         title: null,
         mushroom: null,
@@ -47,40 +53,57 @@ const CreatePost = () => {
     const goBack = () => { navigate('/home'); };
 
     const openPhotos = async () => {
+        // const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 4],
             quality: 1,
         });
 
         if (!result.canceled) {
-            setData({ ...formData, image: result.assets[0].uri });
+            setImage(result.assets[0].uri);
         }
     }
 
     const onChange = (field, value) => {
         if (field === 'title') {
             setError({ ...error, title: null });
-            setData({ ...formData, title: value });
+            setData({ ...data, title: value });
         }
         else if (field === 'mushroom') {
             setError({ ...error, mushroom: null });
-            setData({ ...formData, mushroom: value });
+            setData({ ...data, mushroom: value });
         }
         else if (field === 'description') {
             setError({ ...error, description: null });
-            setData({ ...formData, description: value });
-        }
-        else if (field === 'image') {
-            setError({ ...error, image: null });
-            setData({ ...formData, image: value });
+            setData({ ...data, description: value });
         }
     };
 
     const submit = useCallback(async () => {
-        console.log(formData);
+        const formData = new FormData();
+
+        const fileName = image.split('/').pop();
+        const fileExtension = fileName.split('.').pop();
+        formData.append("image", {
+            uri: image,
+            name: fileName,
+            type: `image/${ fileExtension }`,
+        });
+        formData.append("title", data.title);
+        formData.append("description", data.description);
+        formData.append("mushroom", data.mushroom)
+
+        api({ token: user.token, contentType: 'multipart/form-data' }).post('/posts', formData)
+            .then(({ data }) => {
+                navigate('/home');
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     });
 
     return (
@@ -103,7 +126,7 @@ const CreatePost = () => {
                               Mushroom
                           </FormControl.Label>
                           {/* TODO: make dropdown scrollable using a different component */}
-                          <Select w="64" selectedValue={formData.mushroom} placeholder="Choose a Mushroom" _selectedItem={{
+                          <Select w="64" selectedValue={data.mushroom} placeholder="Choose a Mushroom" _selectedItem={{
                               endIcon: <CheckIcon />
                           }} onValueChange={value => onChange('mushroom', value)} _actionSheetBody={{ scrollEnabled: false }}>
                               {MUSHROOMS.map((mushroom, index) => (
@@ -119,7 +142,7 @@ const CreatePost = () => {
                       </FormControl>
                       <HStack justifyContent="space-between" alignContent="center" w="64" pt="3">
                           <FormControl.Label>
-                              { formData.image === '' ? "Upload an Image" : "Choose a different image "}
+                              { !image ? "Upload an Image" : "Choose a different image "}
                           </FormControl.Label>
                           <Button _text={{fontWeight:"medium"}} borderRadius="full" shadow="5" onPress={openPhotos}>
                               Upload
@@ -129,7 +152,7 @@ const CreatePost = () => {
               </Center>
               <HStack justifyContent="center" alignContent="center">
                   <VStack justifyContent="space-between" alignContent="center" pt="3" space="3">
-                      { formData.image !== '' ? (
+                      { image ? (
                           <>
                               <HStack justifyContent="center" alignContent="center">
                                   <Text>
@@ -137,7 +160,7 @@ const CreatePost = () => {
                                   </Text>
                               </HStack>
                               <Box w="40" h="40" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" bg="gray.50" mb="3">
-                                  <Image width="100%" height="100%" resizeMode="contain" source={{ uri: formData.image }} alt='Alt text'/>
+                                  <Image width="100%" height="100%" resizeMode="contain" source={{ uri: image }} alt='Alt text'/>
                               </Box>
                           </>
                       ) : null }
