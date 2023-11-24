@@ -22,14 +22,22 @@ const AppFooter = () => {
         navigate('/');
     };
 
+    const goHome = () => {
+        navigate('/home');
+    };
+
+    const goCreate = () => {
+        navigate('/create');
+    };
+
     return (
         <>
             <HStack bg="primary.600" justifyContent="space-between" alignItems="center" shadow="3" pl="7" pr="5">
-                <Button>
+                <Button onPress={goHome}>
                     <Icon as={<AntDesign name="home"/>} size="8" color="primary.50"/>
                 </Button>
                 { user ?  (
-                    <Button>
+                    <Button onPress={goCreate}>
                         <Icon as={<Ionicons name="add"/>} size="12" color="primary.50"/>
                     </Button>
                 ) : null }
