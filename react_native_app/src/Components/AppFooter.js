@@ -28,9 +28,11 @@ const AppFooter = () => {
                 <Button>
                     <Icon as={<AntDesign name="home"/>} size="8" color="primary.50"/>
                 </Button>
-                <Button>
-                    <Icon as={<Ionicons name="add"/>} size="12" color="primary.50"/>
-                </Button>
+                { user ?  (
+                    <Button>
+                        <Icon as={<Ionicons name="add"/>} size="12" color="primary.50"/>
+                    </Button>
+                ) : null }
                 <Button onPress={goBack}>
                     <Icon as={<Feather name="user"/>} size="8" color="primary.50"/>
                 </Button>
