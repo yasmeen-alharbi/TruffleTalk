@@ -1,13 +1,17 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
-const api = ({ token = null } = {}) => {
+const api = ({ token = null, contentType = '' } = {}) => {
     const api = axios.create({
         baseURL: 'http://localhost/api/',
     });
 
     if (token) {
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+
+    if (contentType !== '') {
+        api.defaults.headers.common['Content-Type'] = contentType;
     }
 
     api.interceptors.response.use(response => response, error => {
