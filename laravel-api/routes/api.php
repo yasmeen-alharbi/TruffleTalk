@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AuthTokenController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -71,10 +70,10 @@ Route::middleware('auth:sanctum')->group(
         Route::get('/users', [UserController::class, 'index'])
             ->name('users.index');
 
-        Route::post('/users/{id}/follow', [FollowerController::class, 'follow'])
+        Route::post('/users/{id}/follow', [UserController::class, 'follow'])
             ->name('users.follow');
 
-        Route::delete('/users/{id}/unfollow', [FollowerController::class, 'unfollow'])
+        Route::delete('/users/{id}/unfollow', [UserController::class, 'unfollow'])
             ->name('users.unfollow');
     }
 );
