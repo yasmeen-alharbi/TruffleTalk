@@ -25,7 +25,8 @@
     "react-native-svg": "13.9.0",
     "react-native-web": "~0.19.6",
     "react-router-dom": "^6.18.0",
-    "react-router-native": "^6.18.0"
+    "react-router-native": "^6.18.0",
+    "expo-image-picker": "~14.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
