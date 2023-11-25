@@ -17,6 +17,7 @@ import {
     TextArea,
     CheckIcon,
     FormControl,
+    WarningOutlineIcon,
 } from 'native-base';
 import { Image } from 'react-native';
 import { useNavigate } from 'react-router-dom';
@@ -29,32 +30,29 @@ import AppHeader from './Components/AppHeader';
 import AppFooter from './Components/AppFooter';
 
 const CreatePost = () => {
-
     const MUSHROOMS = ['mushroom1', 'mushroom2', 'mushroom3']; // TODO: might be temporary
 
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [image, setImage] = useState(null);
 
+    // Form data transforms null into "null" so empty string initial values are required for BE validation.
     const [data, setData] = useState({
-        title: null,
+        title: '',
         mushroom: '',
-        description: null,
+        description: '',
         image: '',
     });
-
     const [error, setError] = useState({
         title: null,
         mushroom: null,
         description: null,
-        image: null,
+        image: '',
     });
 
     const goBack = () => { navigate('/home'); };
 
     const openPhotos = async () => {
-        // const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -65,6 +63,7 @@ const CreatePost = () => {
 
         if (!result.canceled) {
             setImage(result.assets[0].uri);
+            setError({ ...error, image: '' });
         }
     }
 
@@ -84,26 +83,34 @@ const CreatePost = () => {
     };
 
     const submit = useCallback(async () => {
-        const formData = new FormData();
+        if (!image) { // FormData() throws an error so this is needed.
+            setError({ ...error, image: "An image is required."});
+        }
+        else {
+            const formData = new FormData();
 
-        const fileName = image.split('/').pop();
-        const fileExtension = fileName.split('.').pop();
-        formData.append("image", {
-            uri: image,
-            name: fileName,
-            type: `image/${ fileExtension }`,
-        });
-        formData.append("title", data.title);
-        formData.append("description", data.description);
-        formData.append("mushroom", data.mushroom)
-
-        api({ token: user.token, contentType: 'multipart/form-data' }).post('/posts', formData)
-            .then(({ data }) => {
-                navigate('/home');
-            })
-            .catch((error) => {
-                console.error(error);
+            const fileName = image.split('/').pop();
+            const fileExtension = fileName.split('.').pop();
+            formData.append("image", {
+                uri: image,
+                name: fileName,
+                type: `image/${fileExtension}`,
             });
+            formData.append("title", data.title);
+            formData.append("description", data.description);
+            formData.append("mushroom", data.mushroom)
+
+            api({
+                token: user.token,
+                contentType: 'multipart/form-data'
+            }).post('/posts', formData)
+                .then(({ data }) => {
+                    navigate('/home');
+                })
+                .catch(({ errors }) => {
+                    setError(errors);
+                });
+        }
     });
 
     return (
@@ -112,20 +119,22 @@ const CreatePost = () => {
           <KeyboardAwareScrollView h="100%">
               <Center pt="5">
                   <Heading size="lg" color="primary.700">
-                      Show off your fun-guy ;3 {/* i hate myself */}
+                      Show off your fun-guy!
                   </Heading>
                   <Center maxW="70%">
-                      <FormControl pt="3">
+                      <FormControl pt="3" isInvalid={ error?.title }>
                           <FormControl.Label>
                               Title
                           </FormControl.Label>
                           <Input w="64" onChangeText={value => onChange('title', value)}/>
+                          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                              { error?.title }
+                          </FormControl.ErrorMessage>
                       </FormControl>
-                      <FormControl pt="3">
+                      <FormControl pt="3" isInvalid={ error?.mushroom }>
                           <FormControl.Label>
                               Mushroom
                           </FormControl.Label>
-                          {/* TODO: make dropdown scrollable using a different component */}
                           <Select w="64" selectedValue={data.mushroom} placeholder="Choose a Mushroom" _selectedItem={{
                               endIcon: <CheckIcon />
                           }} onValueChange={value => onChange('mushroom', value)} _actionSheetBody={{ scrollEnabled: false }}>
@@ -133,12 +142,18 @@ const CreatePost = () => {
                                   <Select.Item key={index} label={mushroom} value={mushroom} />
                               ))}
                           </Select>
+                          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                              { error?.mushroom }
+                          </FormControl.ErrorMessage>
                       </FormControl>
-                      <FormControl pt="3">
+                      <FormControl pt="3" isInvalid={ error?.description }>
                           <FormControl.Label>
                               Description
                           </FormControl.Label>
                           <TextArea w="64" onChangeText={value => onChange('description', value)}/>
+                          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                              { error?.description }
+                          </FormControl.ErrorMessage>
                       </FormControl>
                       <HStack justifyContent="space-between" alignContent="center" w="64" pt="3">
                           <FormControl.Label>
@@ -148,6 +163,11 @@ const CreatePost = () => {
                               Upload
                           </Button>
                       </HStack>
+                      <FormControl isInvalid={ error?.image !== '' }>
+                          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                              { error?.image }
+                          </FormControl.ErrorMessage>
+                      </FormControl>
                   </Center>
               </Center>
               <HStack justifyContent="center" alignContent="center">
