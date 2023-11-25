@@ -9,14 +9,16 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
 
-    const logOut = () => { // TODO: move later
-        api({ token: user.token }).delete('/auth/token').then(() => {
-            setUser(null);
-            SecureStore.deleteItemAsync('user');
-        }).catch(({ errors }) => {
-            setUser(null);
-            setError(errors);
-        });
+    const logOut = () => {
+        setUser(null); // Just in case anything fails
+
+        api({ token: user.token }).delete('/auth/token')
+            .then(() => {
+                SecureStore.deleteItemAsync('user');
+            })
+            .catch(({ errors }) => {
+                setError(errors);
+            });
     };
 
     return (
