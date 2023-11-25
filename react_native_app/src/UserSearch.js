@@ -79,7 +79,7 @@ const UserSearch = () => {
                             {!usersLoading && users.length > 0 ? (
                                 <>
                                     {users.map((user) => (
-                                        <UserCard key={ user.id } user={ user } />
+                                        <UserCard key={ user.id } userData={ user } />
                                     ))}
                                 </>
                             ) : null }
