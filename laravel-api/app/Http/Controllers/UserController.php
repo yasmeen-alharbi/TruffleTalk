@@ -26,6 +26,7 @@ class UserController extends Controller
      */
     public function index(Request $request): AnonymousResourceCollection
     {
+        $userId = $request->user()->id;
         $searchTerm = null;
 
         if ($request->filled('search')) {
@@ -33,9 +34,12 @@ class UserController extends Controller
         }
 
         $users = $this->user->newQuery()
+            ->where('id', '!=', $userId) // Exclude the current user
             ->when($searchTerm, function ($query) use ($searchTerm) {
-                $query->where('name', 'LIKE', "%$searchTerm%")
-                    ->orWhere('username', 'LIKE', "%$searchTerm%");
+                $query->where(function ($innerQuery) use ($searchTerm) {
+                    $innerQuery->where('name', 'LIKE', "%$searchTerm%")
+                        ->orWhere('username', 'LIKE', "%$searchTerm%");
+                });
             })
             ->get();
 
