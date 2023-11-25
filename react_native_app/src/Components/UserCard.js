@@ -16,7 +16,7 @@ const UserCard = ({ userData }) => {
                 })
                 .catch(error => {
                     console.error(error);
-                })
+                });
         } else {
             api({ token: user.token }).delete(`/users/${userData.id}/unfollow`)
                 .then(() => {
@@ -24,7 +24,7 @@ const UserCard = ({ userData }) => {
                 })
                 .catch(error => {
                     console.error(error);
-                })
+                });
         }
     };
 
@@ -38,8 +38,8 @@ const UserCard = ({ userData }) => {
                     { userData.name }
                 </Text>
             </VStack>
-            <Button size={10} alignItems="center" onPress={followUser}>
-                <Icon as={<Feather name={`${following ? "user-check" : "user-plus"}`}/>} size="5" color="primary.50"/>
+            <Button alignItems="center" onPress={followUser} borderWidth="1" borderColor="primary.500" bg={`${following ? "primary.500" : "white"}`} size={10}>
+                <Icon as={<Feather name={`${following ? "user-check" : "user-plus"}`}/>} size="5" color={`${following ? "white" : "primary.500"}`}/>
             </Button>
         </HStack>
     );

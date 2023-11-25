@@ -8,17 +8,39 @@ import {
     Divider,
 } from 'native-base';
 import moment from 'moment/moment';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Dimensions, Image } from 'react-native';
 
 import { AuthContext } from '../AuthProvider';
+import api from '../util/api';
 
 const Post = ({ data, likePost, showComments }) => {
     const { user } = useContext(AuthContext);
+    const [following, setFollowing] = useState(data.followed_by_current_user);
     const date = moment(data.created_at);
     const formattedDate = date.utc().format('DD/MM/YY');
+
+    const followUser = () => {
+        if (!following) {
+            api({ token: user.token }).post(`/users/${data.user_id}/follow`)
+                .then(() => {
+                    setFollowing(true);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        } else {
+            api({ token: user.token }).delete(`/users/${data.user_id}/unfollow`)
+                .then(() => {
+                    setFollowing(false);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    };
 
     return (
         <>
@@ -34,8 +56,8 @@ const Post = ({ data, likePost, showComments }) => {
                     </VStack>
                     { user && user.id !== data.user_id ? (
                         <>
-                            <Button size={10} alignItems="center">
-                                <Icon as={<Feather name={`${data.followed_by_current_user ? "user-check" : "user-plus"}`}/>} size="5" color="primary.50"/>
+                            <Button alignItems="center" onPress={followUser} borderWidth="1" borderColor="primary.500" bg={`${following ? "primary.500" : "white"}`} size={10}>
+                                <Icon as={<Feather name={`${following ? "user-check" : "user-plus"}`}/>} size="5" color={`${following ? "white" : "primary.500"}`}/>
                             </Button>
                         </>
                     ) : null}
