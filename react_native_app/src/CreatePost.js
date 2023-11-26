@@ -2,6 +2,7 @@ import React, {
     useState,
     useContext,
     useCallback,
+    useMemo,
 } from 'react';
 import {
     Box,
@@ -25,13 +26,12 @@ import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import api from './util/api';
+import MUSHROOMS from './Mushrooms';
 import { AuthContext } from './AuthProvider';
 import AppHeader from './Components/AppHeader';
 import AppFooter from './Components/AppFooter';
 
 const CreatePost = () => {
-    const MUSHROOMS = ['mushroom1', 'mushroom2', 'mushroom3']; // TODO: might be temporary
-
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [image, setImage] = useState(null);
@@ -113,6 +113,21 @@ const CreatePost = () => {
         }
     });
 
+    const MushroomSelect = useMemo(() => [
+        <Select
+            w="64"
+            placeholder="Choose a Mushroom"
+            selectedValue={data.mushroom}
+            _selectedItem={{endIcon: <CheckIcon/>}}
+            onValueChange={(value) => onChange('mushroom', value)}
+            _actionSheetBody={{ scrollEnabled: true }}
+        >
+            {MUSHROOMS.map((mushroom ) => (
+                <Select.Item key={mushroom} label={mushroom} value={mushroom}/>
+            ))}
+        </Select>
+    ], [MUSHROOMS, data.mushroom]);
+
     return (
       <View h="100%">
           <AppHeader />
@@ -135,13 +150,7 @@ const CreatePost = () => {
                           <FormControl.Label>
                               Mushroom
                           </FormControl.Label>
-                          <Select w="64" selectedValue={data.mushroom} placeholder="Choose a Mushroom" _selectedItem={{
-                              endIcon: <CheckIcon />
-                          }} onValueChange={value => onChange('mushroom', value)} _actionSheetBody={{ scrollEnabled: false }}>
-                              {MUSHROOMS.map((mushroom, index) => (
-                                  <Select.Item key={index} label={mushroom} value={mushroom} />
-                              ))}
-                          </Select>
+                          {MushroomSelect}
                           <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                               { error?.mushroom }
                           </FormControl.ErrorMessage>
