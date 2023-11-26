@@ -14,7 +14,7 @@ const AppHeader = () => {
             <HStack bg="primary.600" h="32" shadow="3" pt="12">
                 <HStack w="41%"></HStack>
                 <HStack w="56%" h="100%" justifyContent="space-between" alignItems="center">
-                    <Image style={{ width: 70, height: 50 }} source={require('../mushroom.png')} alt='Alt text'/>
+                    <Image style={{ width: 70, height: 50 }} source={require('../mushroom.png')} alt='logo'/>
                     <Button variant="subtle" borderRadius="full" shadow={3} size="12">
                         <Icon as={<Feather name="users"/>} color="primary.800" size="7"/>
                     </Button>

@@ -98,13 +98,13 @@ const CreatePost = () => {
             });
             formData.append("title", data.title);
             formData.append("description", data.description);
-            formData.append("mushroom", data.mushroom)
+            formData.append("mushroom", data.mushroom);
 
             api({
                 token: user.token,
                 contentType: 'multipart/form-data'
             }).post('/posts', formData)
-                .then(({ data }) => {
+                .then(() => {
                     navigate('/home');
                 })
                 .catch(({ errors }) => {
@@ -180,7 +180,7 @@ const CreatePost = () => {
                                   </Text>
                               </HStack>
                               <Box w="40" h="40" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" bg="gray.50" mb="3">
-                                  <Image width="100%" height="100%" resizeMode="contain" source={{ uri: image }} alt='Alt text'/>
+                                  <Image style={{ width: "100%", height: "100%"}} resizeMode="contain" source={{ uri: image }} alt='preview image'/>
                               </Box>
                           </>
                       ) : null }

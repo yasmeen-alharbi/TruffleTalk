@@ -42,7 +42,7 @@ const Post = ({ data, likePost, showComments }) => {
                 </HStack>
                 <Divider bg="blueGray.200"/>
                 <Box w={ Dimensions.get('window').width } h={ Dimensions.get('window').width } bg="gray.100">
-                    <Image width="100%" height="100%" resizeMode="contain" source={{ uri: data.image }} alt='Alt text'/>
+                    <Image style={{ width: "100%", height: "100%"}} resizeMode="contain" source={{ uri: data.image }} alt='mushroom post image'/>
                 </Box>
                 <Divider bg="blueGray.200"/>
                 <VStack pl="3" pt="3" pb="2" pr="3">

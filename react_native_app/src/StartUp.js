@@ -29,7 +29,7 @@ const StartUp = () => {
         <View>
             <Center pt="20">
                 <Center>
-                    <Image style={{ width: 110, height: 80 }} source={require('./mushroom.png')} alt='Alt text'/>
+                    <Image style={{ width: 110, height: 80 }} source={require('./mushroom.png')} alt='logo'/>
                     <Heading size="3xl" color="primary.700" pt="3.5">
                         TruffleTalk
                     </Heading>
