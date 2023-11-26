@@ -18,6 +18,8 @@ import {
     Heading,
     Divider,
     ScrollView,
+    FormControl,
+    WarningOutlineIcon,
 } from 'native-base';
 
 import api from './util/api';
@@ -28,17 +30,21 @@ import AppHeader from './Components/AppHeader';
 import AppFooter from './Components/AppFooter';
 
 const Home = () => {
-    const { user } = useContext(AuthContext);
+    const {user} = useContext(AuthContext);
 
     const [feedData, setFeedData] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const scrollRef = useRef(true);
     const [showRecommended, setShowRecommended] = useState(false);
+
     const [recommendedData, setRecommendedData] = useState([]);
     const [recommendedLoading, setRecommendedLoading] = useState(true);
+
     const [modalVisible, setModalVisible] = useState(false);
-    const [comments, setComments] = useState([]);
+    const [commentData, setCommentData] = useState({postID: null, comments: []});
+    const [comment, setComment] = useState(null);
+    const [commentErrors, setCommentErrors] = useState(null);
 
     useEffect(() => {
         if (user) {
@@ -66,10 +72,10 @@ const Home = () => {
                 })
         }
     }, []);
-    
-    const showComments = (comments) => {
+
+    const showComments = (postID, comments) => {
         setModalVisible(true);
-        setComments(comments);
+        setCommentData({postID: postID, comments: comments});
     };
 
     /**
@@ -182,6 +188,33 @@ const Home = () => {
         }
     });
 
+    const onCommentChange = (value) => {
+        setComment(value);
+        setCommentErrors(null);
+    }
+
+    const submitComment = () => {
+        api({ token: user.token })
+            .post(`/posts/${commentData.postID}/comments`, { content: comment })
+            .then(({ data }) => {
+                setRecommendedData(recommendedData.map((prevData) =>
+                    prevData.id === commentData.postID
+                        ? {...prevData, comments: data.post.comments}
+                        : prevData
+                ));
+                setFeedData(feedData.map((prevData) =>
+                    prevData.id === commentData.postID
+                        ? {...prevData, comments: data.post.comments}
+                        : prevData
+                ));
+
+                setCommentData({ postID: commentData.postID, comments: data.post.comments });
+            })
+            .catch(({ errors }) => {
+                setCommentErrors(errors.content);
+            })
+    };
+
     return (
         <View h="100%">
             {loading ? (
@@ -221,9 +254,13 @@ const Home = () => {
                                     <Spinner pb="2" pt="2"/>
                                 ) : (
                                     <>
-                                        {recommendedData.length !== 0? (
+                                        {recommendedData.length !== 0 ? (
                                             recommendedData.map((data) => (
-                                                <Post key={ data.id } data={ data } likePost={ () => likeRecommendedPost(data.id) } showComments={ showComments } />
+                                                <Post key={ data.id }
+                                                      data={ data }
+                                                      likePost={ () => likeRecommendedPost(data.id) }
+                                                      showComments={ showComments }
+                                                />
                                             ))
                                         ) : null}
                                     </>
@@ -240,30 +277,39 @@ const Home = () => {
                                 ) : null }
                             </>
                         )}
-                        <Modal isOpen={modalVisible} pt="56" size="xl" onClose={setModalVisible} maxH="53%">
+                        <Modal pt="40" isOpen={modalVisible} size="xl" onClose={setModalVisible} animationPreset="slide" height="70%" avoidKeyboard>
                             <Modal.Content>
                                 <Modal.CloseButton />
                                 <Modal.Header>Comments</Modal.Header>
-                                <Modal.Body>
-                                    <ScrollView>
-                                        {
-                                            comments.length !== 0 ? (
-                                                comments.map((comment) => (
-                                                    <Comment key={comment.id} data={comment}/>
-                                                ))
-                                            ) : (
-                                                <Text color="primary.900">Woah, there's so "mushroom" in here!</Text>
-                                            )
-                                        }
-                                    </ScrollView>
+                                <Modal.Body pt="1">
+                                    {
+                                        commentData.comments.length !== 0 ? (
+                                            commentData.comments.map((comment) => (
+                                                <Comment key={ comment.id } data={ comment }/>
+                                            ))
+                                        ) : (
+                                            <Text pt="2.5" color="primary.900">Woah, there's so mush-room in here!</Text>
+                                        )
+                                    }
                                 </Modal.Body>
                                 <Modal.Footer justifyContent="space-between">
-                                    <Button.Group space={2}>
-                                        <Input w="80%" placeholder="Add a comment..."/>{/*TODO: conditional rendering for guest*/}
-                                        <Button>{/*TODO: add save functionality*/}
-                                            Save
-                                        </Button>
-                                    </Button.Group>
+                                    {user ? (
+                                        <Button.Group space={2}>
+                                            <FormControl w="80%" h="100%" isInvalid={commentErrors !== null}>
+                                                <Input w="100%" placeholder="Add a comment..." onChangeText={ onCommentChange }/>
+                                                <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                                    { commentErrors }
+                                                </FormControl.ErrorMessage>
+                                            </FormControl>
+                                            <Button onPress={ submitComment }>
+                                                Save
+                                            </Button>
+                                        </Button.Group>
+                                    ) : (
+                                        <Text color="primary.900">
+                                            Create an account to share a comment!
+                                        </Text>
+                                    )}
                                 </Modal.Footer>
                             </Modal.Content>
                         </Modal>
