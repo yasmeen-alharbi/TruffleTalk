@@ -3,10 +3,12 @@ import {
     Button,
     HStack,
 } from 'native-base';
+import {
+    Ionicons,
+    AntDesign,
+    MaterialIcons,
+} from '@expo/vector-icons';
 import React, { useContext } from 'react';
-import { Feather } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
 import  {useNavigate } from 'react-router-dom';
 
 import { AuthContext } from '../AuthProvider';
@@ -42,7 +44,7 @@ const AppFooter = () => {
                     </Button>
                 ) : null }
                 <Button onPress={goBack}>
-                    <Icon as={<Feather name="user"/>} size="8" color="primary.50"/>
+                    <Icon as={<MaterialIcons name="logout"/>} size="8" color="primary.50"/>
                 </Button>
             </HStack>
         </>
