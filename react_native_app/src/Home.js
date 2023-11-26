@@ -8,8 +8,11 @@ import React, {
 import {
     View,
     Text,
+    Modal,
+    Input,
     VStack,
     HStack,
+    Button,
     Center,
     Spinner,
     Heading,
@@ -19,6 +22,7 @@ import {
 
 import api from './util/api';
 import Post from './Components/Post';
+import Comment from './Components/Comment';
 import { AuthContext } from './AuthProvider';
 import AppHeader from './Components/AppHeader';
 import AppFooter from './Components/AppFooter';
@@ -33,6 +37,8 @@ const Home = () => {
     const [showRecommended, setShowRecommended] = useState(false);
     const [recommendedData, setRecommendedData] = useState([]);
     const [recommendedLoading, setRecommendedLoading] = useState(true);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [comments, setComments] = useState([]);
 
     useEffect(() => {
         if (user) {
@@ -61,8 +67,9 @@ const Home = () => {
         }
     }, []);
     
-    const showComments = () => {
-        console.log("show comments"); // TODO
+    const showComments = (comments) => {
+        setModalVisible(true);
+        setComments(comments);
     };
 
     /**
@@ -233,6 +240,33 @@ const Home = () => {
                                 ) : null }
                             </>
                         )}
+                        <Modal isOpen={modalVisible} pt="56" size="xl" onClose={setModalVisible} maxH="53%">
+                            <Modal.Content>
+                                <Modal.CloseButton />
+                                <Modal.Header>Comments</Modal.Header>
+                                <Modal.Body>
+                                    <ScrollView>
+                                        {
+                                            comments.length !== 0 ? (
+                                                comments.map((comment) => (
+                                                    <Comment key={comment.id} data={comment}/>
+                                                ))
+                                            ) : (
+                                                <Text color="primary.900">Woah, there's so "mushroom" in here!</Text>
+                                            )
+                                        }
+                                    </ScrollView>
+                                </Modal.Body>
+                                <Modal.Footer justifyContent="space-between">
+                                    <Button.Group space={2}>
+                                        <Input w="80%" placeholder="Add a comment..."/>{/*TODO: conditional rendering for guest*/}
+                                        <Button>{/*TODO: add save functionality*/}
+                                            Save
+                                        </Button>
+                                    </Button.Group>
+                                </Modal.Footer>
+                            </Modal.Content>
+                        </Modal>
                     </ScrollView>
                     <AppFooter />
                 </>
