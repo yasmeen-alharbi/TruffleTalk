@@ -55,7 +55,9 @@ class PostController extends Controller
     public function index(): AnonymousResourceCollection
     {
         $posts = $this->post->newQuery()
-            ->with(['comments', 'user:id,username'])
+            ->with(['comments' => function ($query) {
+                $query->orderBy('created_at', 'DESC');
+            }, 'user:id,username'])
             ->withCount(['likes', 'comments'])
             ->orderByRaw('(likes_count + (3 * comments_count)) DESC, created_at DESC')
             ->get();
@@ -78,7 +80,9 @@ class PostController extends Controller
         $followingIds[] = $currentUser->id;
 
         $followedPosts = $this->post->newQuery()
-            ->with(['comments', 'user:id,username'])
+            ->with(['comments' => function ($query) {
+                $query->orderBy('created_at', 'DESC');
+            }, 'user:id,username'])
             ->when($afterTimestamp, function ($query) use ($afterTimestamp) {
                 $query->where('created_at', '>', $afterTimestamp);
             })
@@ -123,12 +127,17 @@ class PostController extends Controller
             })
                 ->where('user_id', '!=', $currentUser->id)
                 ->withCount(['likes', 'comments'])
+                ->with(['comments' => function ($query) {
+                    $query->orderBy('created_at', 'desc');
+                }])
                 ->orderByRaw('(likes_count + (3 * comments_count)) DESC, created_at DESC')
                 ->take(100)
                 ->get();
         } else {
             $recommendedPosts = $this->post->newQuery()
-                ->with(['comments', 'user:id,username'])
+                ->with(['comments' => function ($query) {
+                    $query->orderBy('created_at', 'DESC');
+                }, 'user:id,username'])
                 ->whereIn('mushroom', $mushroomsOfInterest)
                 ->where('user_id', '!=', $currentUser->id)
                 ->whereNotIn('user_id', function ($query) use ($currentUser) {
@@ -150,6 +159,9 @@ class PostController extends Controller
                     })
                     ->where('user_id', '!=', $currentUser->id)
                     ->withCount(['likes', 'comments'])
+                    ->with(['comments' => function ($query) {
+                        $query->orderBy('created_at', 'desc');
+                    }])
                     ->orderByRaw('(likes_count + (3 * comments_count)) DESC, created_at DESC')
                     ->take(100)
                     ->get();
