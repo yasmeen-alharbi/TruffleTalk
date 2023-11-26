@@ -73,6 +73,21 @@ const CreatePost = () => {
         }
     }
 
+    const onChange = (field, value) => {
+        if (field === 'title') {
+            setError({ ...error, title: null });
+            setData({ ...data, title: value });
+        }
+        else if (field === 'mushroom') {
+            setError({ ...error, mushroom: null });
+            setData({ ...data, mushroom: value });
+        }
+        else if (field === 'description') {
+            setError({ ...error, description: null });
+            setData({ ...data, description: value });
+        }
+    };
+
     const submit = useCallback(async () => {
         if (!image) { // FormData() throws an error so this is needed.
             setError({ ...error, image: "An image is required."});
@@ -108,16 +123,16 @@ const CreatePost = () => {
         <Select
             w="64"
             placeholder="Choose a Mushroom"
-            selectedValue={data.mushroom}
-            _selectedItem={{endIcon: <CheckIcon/>}}
-            onValueChange={(value) => setData({ ...data, mushroom: value })}
+            selectedValue={ data.mushroom }
+            _selectedItem={{ endIcon: <CheckIcon/> }}
+            onValueChange={ value => onChange('mushroom', value) }
             _actionSheetBody={{ scrollEnabled: true }}
         >
             {MUSHROOMS.map((mushroom ) => (
-                <Select.Item key={mushroom} label={mushroom} value={mushroom}/>
+                <Select.Item key={ mushroom } label={ mushroom } value={ mushroom }/>
             ))}
         </Select>
-    ], [MUSHROOMS, data.mushroom]);
+    ], [MUSHROOMS, data]);
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -133,7 +148,7 @@ const CreatePost = () => {
                               <FormControl.Label>
                                   Title
                               </FormControl.Label>
-                              <Input w="64" value={data.title} onChangeText={(value) => setData({ ...data, title: value })}/>
+                              <Input w="64" onChangeText={value => onChange('title', value)}/>
                               <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                                   { error?.title }
                               </FormControl.ErrorMessage>
@@ -151,7 +166,7 @@ const CreatePost = () => {
                               <FormControl.Label>
                                   Description
                               </FormControl.Label>
-                              <TextArea w="64" value={data.description} onChangeText={(value) => setData({ ...data, description: value })}/>
+                              <TextArea w="64" onChangeText={value => onChange('description', value)}/>
                               <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                                   { error?.description }
                               </FormControl.ErrorMessage>
