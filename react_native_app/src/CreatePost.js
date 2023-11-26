@@ -166,7 +166,7 @@ const CreatePost = () => {
                               <FormControl.Label>
                                   Description
                               </FormControl.Label>
-                              <TextArea w="64" onChangeText={value => onChange('description', value)}/>
+                              <TextArea w="64" h="12" onChangeText={value => onChange('description', value)}/>
                               <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                                   { error?.description }
                               </FormControl.ErrorMessage>
@@ -209,11 +209,9 @@ const CreatePost = () => {
                       </VStack>
                   </HStack>
               </View>
-              <AppFooter />
           </View>
         </TouchableWithoutFeedback>
     );
 };
 
 export default CreatePost;
-console.disableYellowBox = true;
