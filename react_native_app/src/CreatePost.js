@@ -20,10 +20,14 @@ import {
     FormControl,
     WarningOutlineIcon,
 } from 'native-base';
-import { Image } from 'react-native';
+import {
+    Image,
+    Keyboard,
+    LogBox,
+    TouchableWithoutFeedback
+} from 'react-native';
 import { useNavigate } from 'react-router-dom';
 import * as ImagePicker from 'expo-image-picker';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import api from './util/api';
 import MUSHROOMS from './Mushrooms';
@@ -32,6 +36,9 @@ import AppHeader from './Components/AppHeader';
 import AppFooter from './Components/AppFooter';
 
 const CreatePost = () => {
+    LogBox.ignoreLogs([ // ignores warning for demo
+        'Warning: Each child in a list should have a unique "key" prop.',
+    ]);
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [image, setImage] = useState(null);
@@ -129,82 +136,85 @@ const CreatePost = () => {
     ], [MUSHROOMS, data.mushroom]);
 
     return (
-      <View h="100%">
-          <AppHeader />
-          <KeyboardAwareScrollView h="100%">
-              <Center pt="5">
-                  <Heading size="lg" color="primary.700">
-                      Show off your fun-guy!
-                  </Heading>
-                  <Center maxW="70%">
-                      <FormControl pt="3" isInvalid={ error?.title }>
-                          <FormControl.Label>
-                              Title
-                          </FormControl.Label>
-                          <Input w="64" onChangeText={value => onChange('title', value)}/>
-                          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                              { error?.title }
-                          </FormControl.ErrorMessage>
-                      </FormControl>
-                      <FormControl pt="3" isInvalid={ error?.mushroom }>
-                          <FormControl.Label>
-                              Mushroom
-                          </FormControl.Label>
-                          {MushroomSelect}
-                          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                              { error?.mushroom }
-                          </FormControl.ErrorMessage>
-                      </FormControl>
-                      <FormControl pt="3" isInvalid={ error?.description }>
-                          <FormControl.Label>
-                              Description
-                          </FormControl.Label>
-                          <TextArea w="64" onChangeText={value => onChange('description', value)}/>
-                          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                              { error?.description }
-                          </FormControl.ErrorMessage>
-                      </FormControl>
-                      <HStack justifyContent="space-between" alignContent="center" w="64" pt="3">
-                          <FormControl.Label>
-                              { !image ? "Upload an Image" : "Choose a different image "}
-                          </FormControl.Label>
-                          <Button _text={{fontWeight:"medium"}} borderRadius="full" shadow="5" onPress={openPhotos}>
-                              Upload
-                          </Button>
-                      </HStack>
-                      <FormControl isInvalid={ error?.image !== '' }>
-                          <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                              { error?.image }
-                          </FormControl.ErrorMessage>
-                      </FormControl>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View h="100%">
+              <AppHeader />
+              <View h="77%">
+                  <Center pt="5">
+                      <Heading size="lg" color="primary.700">
+                          Share your mushroom find!
+                      </Heading>
+                      <Center maxW="70%">
+                          <FormControl pt="1" isInvalid={ error?.title }>
+                              <FormControl.Label>
+                                  Title
+                              </FormControl.Label>
+                              <Input w="64" onChangeText={value => onChange('title', value)}/>
+                              <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                  { error?.title }
+                              </FormControl.ErrorMessage>
+                          </FormControl>
+                          <FormControl pt="1" isInvalid={ error?.mushroom }>
+                              <FormControl.Label>
+                                  Mushroom
+                              </FormControl.Label>
+                              {MushroomSelect}
+                              <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                  { error?.mushroom }
+                              </FormControl.ErrorMessage>
+                          </FormControl>
+                          <FormControl pt="1" isInvalid={ error?.description }>
+                              <FormControl.Label>
+                                  Description
+                              </FormControl.Label>
+                              <TextArea w="64" onChangeText={value => onChange('description', value)}/>
+                              <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                  { error?.description }
+                              </FormControl.ErrorMessage>
+                          </FormControl>
+                          <HStack justifyContent="space-between" alignContent="center" w="64" pt="1">
+                              <FormControl.Label>
+                                  { !image ? "Upload an Image" : "Choose a different image "}
+                              </FormControl.Label>
+                              <Button _text={{fontWeight:"medium"}} borderRadius="full" shadow="5" onPress={openPhotos}>
+                                  Upload
+                              </Button>
+                          </HStack>
+                          <FormControl isInvalid={ error?.image !== '' }>
+                              <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                  { error?.image }
+                              </FormControl.ErrorMessage>
+                          </FormControl>
+                      </Center>
                   </Center>
-              </Center>
-              <HStack justifyContent="center" alignContent="center">
-                  <VStack justifyContent="space-between" alignContent="center" pt="3" space="3">
-                      { image ? (
-                          <>
-                              <HStack justifyContent="center" alignContent="center">
-                                  <Text>
-                                      Image Preview
-                                  </Text>
-                              </HStack>
-                              <Box w="40" h="40" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" bg="gray.50" mb="3">
-                                  <Image style={{ width: "100%", height: "100%"}} resizeMode="contain" source={{ uri: image }} alt='preview image'/>
-                              </Box>
-                          </>
-                      ) : null }
-                      <Button _text={{fontWeight:"medium"}} borderRadius="full" w="40" shadow="5" onPress={submit} mb="3">
-                          SUBMIT
-                      </Button>
-                      <Button  borderRadius="full" shadow="5" w="40" variant="subtle" onPress={goBack} mb="5">
-                          CANCEL
-                      </Button>
-                  </VStack>
-              </HStack>
-          </KeyboardAwareScrollView>
-          <AppFooter />
-      </View>
+                  <HStack justifyContent="center" alignContent="center">
+                      <VStack justifyContent="space-between" alignContent="center" pt="1" space="1">
+                          { image ? (
+                              <>
+                                  <HStack justifyContent="center" alignContent="center">
+                                      <Text>
+                                          Image Preview
+                                      </Text>
+                                  </HStack>
+                                  <Box w="40" h="40" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" bg="gray.50" mb="1">
+                                      <Image style={{ width: "100%", height: "100%"}} resizeMode="contain" source={{ uri: image }} alt='preview image'/>
+                                  </Box>
+                              </>
+                          ) : null }
+                          <Button _text={{fontWeight:"medium"}} borderRadius="full" w="40" shadow="5" onPress={submit} mb="3">
+                              SUBMIT
+                          </Button>
+                          <Button  borderRadius="full" shadow="5" w="40" variant="subtle" onPress={goBack}>
+                              CANCEL
+                          </Button>
+                      </VStack>
+                  </HStack>
+              </View>
+              <AppFooter />
+          </View>
+        </TouchableWithoutFeedback>
     );
 };
 
 export default CreatePost;
+console.disableYellowBox = true;

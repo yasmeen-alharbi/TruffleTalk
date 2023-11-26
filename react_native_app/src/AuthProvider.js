@@ -16,7 +16,8 @@ export const AuthProvider = ({ children }) => {
             })
             .catch(({ errors }) => {
                 setError(errors);
-            }).finally(() => {
+            })
+            .finally(() => {
                 setUser(null); // Just in case anything fails
             });
     };

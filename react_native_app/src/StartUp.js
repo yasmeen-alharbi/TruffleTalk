@@ -7,13 +7,16 @@ import {
     Container
 } from 'native-base';
 import { Image } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
+import { AuthContext } from './AuthProvider';
 import { useNavigate } from 'react-router-dom';
 
 const StartUp = () => {
     const navigate = useNavigate();
+    const { setUser } = useContext(AuthContext);
 
     const setGuest = () => {
+        setUser(null);
         navigate('/home');
     };
 
