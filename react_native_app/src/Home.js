@@ -30,7 +30,7 @@ import AppHeader from './Components/AppHeader';
 import AppFooter from './Components/AppFooter';
 
 const Home = () => {
-    const {user} = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
 
     const [feedData, setFeedData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -78,13 +78,16 @@ const Home = () => {
         setCommentData({postID: postID, comments: comments});
     };
 
-    /**
-     * Used with '/followed' data.
-     */
     const likePost = (postID) => {
-        const post = feedData.filter(obj => {
+        let post = feedData.filter(obj => {
             return obj.id === postID;
         });
+
+        if (post.length === 0) { // if the post is a recommended one
+            post = recommendedData.filter(obj => {
+                return obj.id === postID;
+            });
+        }
 
         if (!post[0].liked_by_current_user) {
             api({ token: user.token }).post(`/posts/${postID}/likes`)
@@ -93,6 +96,11 @@ const Home = () => {
                         prevData.id === postID
                         ? {...prevData, liked_by_current_user: true, likes_count: prevData.likes_count + 1}
                         : prevData
+                    ));
+                    setRecommendedData(recommendedData.map((prevData) =>
+                        prevData.id === postID
+                            ? {...prevData, liked_by_current_user: true, likes_count: prevData.likes_count + 1}
+                            : prevData
                     ));
                 })
                 .catch(error => {
@@ -107,39 +115,6 @@ const Home = () => {
                             ? {...prevData, liked_by_current_user: false, likes_count: prevData.likes_count - 1}
                             : prevData
                     ));
-                })
-                .catch(error => {
-                    console.error(error);
-                })
-        }
-    };
-
-    /**
-     * Used with '/recommended' data.
-     * Need this because we store total page data into two different states for followed and recommended posts.
-     * Without this, states for recommended data won't update and thus like buttons won't update.
-     */
-    const likeRecommendedPost = (postID) => {
-        const post = recommendedData.filter(obj => {
-            return obj.id === postID;
-        });
-
-        if (!post[0].liked_by_current_user) {
-            api({ token: user.token }).post(`/posts/${postID}/likes`)
-                .then(() => {
-                    setRecommendedData(recommendedData.map((prevData) =>
-                        prevData.id === postID
-                            ? {...prevData, liked_by_current_user: true, likes_count: prevData.likes_count + 1}
-                            : prevData
-                    ));
-                })
-                .catch(error => {
-                    console.error(error);
-                })
-        }
-        else {
-            api({ token: user.token }).delete(`/posts/${postID}/likes`)
-                .then(() => {
                     setRecommendedData(recommendedData.map((prevData) =>
                         prevData.id === postID
                             ? {...prevData, liked_by_current_user: false, likes_count: prevData.likes_count - 1}
@@ -258,7 +233,7 @@ const Home = () => {
                                             recommendedData.map((data) => (
                                                 <Post key={ data.id }
                                                       data={ data }
-                                                      likePost={ () => likeRecommendedPost(data.id) }
+                                                      likePost={ () => likePost(data.id) }
                                                       showComments={ showComments }
                                                 />
                                             ))
