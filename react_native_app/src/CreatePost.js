@@ -33,7 +33,6 @@ import api from './util/api';
 import MUSHROOMS from './Mushrooms';
 import { AuthContext } from './AuthProvider';
 import AppHeader from './Components/AppHeader';
-import AppFooter from './Components/AppFooter';
 
 const CreatePost = () => {
     LogBox.ignoreLogs([ // ignores warning for demo
