@@ -254,7 +254,7 @@ const Home = () => {
                                 ) : null }
                             </>
                         )}
-                        <Modal pt="40" isOpen={modalVisible} size="xl" onClose={setModalVisible} animationPreset="slide" height="70%" avoidKeyboard>
+                        <Modal pt="40" isOpen={modalVisible} size="xl" onClose={ () => setModalVisible(!modalVisible) } animationPreset="slide" height="70%" avoidKeyboard>
                             <Modal.Content>
                                 <Modal.CloseButton />
                                 <Modal.Header>Comments</Modal.Header>
