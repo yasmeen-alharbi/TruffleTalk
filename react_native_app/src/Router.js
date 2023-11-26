@@ -10,6 +10,7 @@ import Home from './Home';
 import Login from './Login';
 import StartUp from './StartUp';
 import Register from './Register';
+import UserSearch from './UserSearch';
 import { AuthContext } from './AuthProvider';
 
 const Router = () => {
@@ -33,6 +34,7 @@ const Router = () => {
                 <Route path="/register" Component={Register} />
                 {/* TODO: need to add an error screen */}
                 <Route path="/home" Component={Home} />
+                <Route path="/users" Component={UserSearch}/>
             </Routes>
         </View>
     );

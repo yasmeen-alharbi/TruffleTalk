@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\AuthTokenController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
@@ -67,10 +67,13 @@ Route::middleware('auth:sanctum')->group(
         Route::get('/recommended/posts', [PostController::class, 'recommended'])
             ->name('posts.recommended');
 
-        Route::post('/users/{id}/follow', [FollowerController::class, 'follow'])
+        Route::get('/users', [UserController::class, 'index'])
+            ->name('users.index');
+
+        Route::post('/users/{id}/follow', [UserController::class, 'follow'])
             ->name('users.follow');
 
-        Route::delete('/users/{id}/unfollow', [FollowerController::class, 'unfollow'])
+        Route::delete('/users/{id}/unfollow', [UserController::class, 'unfollow'])
             ->name('users.unfollow');
     }
 );

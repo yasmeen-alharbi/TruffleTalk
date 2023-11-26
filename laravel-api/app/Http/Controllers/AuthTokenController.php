@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserResource;
+use App\Http\Resources\AuthTokenResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -34,7 +34,7 @@ class AuthTokenController extends Controller
             ]);
         }
 
-        return ['user' => new UserResource($user), 'token' => $user->createToken($request->device_name)->plainTextToken];
+        return ['user' => new AuthTokenResource($user), 'token' => $user->createToken($request->device_name)->plainTextToken];
     }
 
     /**
