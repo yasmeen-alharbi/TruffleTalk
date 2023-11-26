@@ -43,7 +43,7 @@ const Home = () => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [commentData, setCommentData] = useState({postID: null, comments: []});
-    const [comment, setComment] = useState(null);
+    const [comment, setComment] = useState('');
     const [commentErrors, setCommentErrors] = useState(null);
 
     useEffect(() => {
@@ -75,6 +75,8 @@ const Home = () => {
 
     const showComments = (postID, comments) => {
         setModalVisible(true);
+        setComment('');
+        setCommentErrors(null);
         setCommentData({postID: postID, comments: comments});
     };
 
@@ -269,20 +271,20 @@ const Home = () => {
                                 </Modal.Body>
                                 <Modal.Footer justifyContent="space-between">
                                     {user ? (
-                                        <Button.Group space={2}>
+                                        <>
                                             <FormControl w="80%" h="100%" isInvalid={commentErrors !== null}>
-                                                <Input w="100%" placeholder="Add a comment..." onChangeText={ onCommentChange }/>
+                                                <Input value={ comment } h={10} placeholder="Add a comment..." onChangeText={ onCommentChange }/>
                                                 <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                                                     { commentErrors }
                                                 </FormControl.ErrorMessage>
                                             </FormControl>
-                                            <Button onPress={ submitComment }>
+                                            <Button h={10} onPress={ submitComment }>
                                                 Save
                                             </Button>
-                                        </Button.Group>
+                                        </>
                                     ) : (
                                         <Text color="primary.900">
-                                            Create an account to share a comment!
+                                            Create an account to share a comment.
                                         </Text>
                                     )}
                                 </Modal.Footer>
