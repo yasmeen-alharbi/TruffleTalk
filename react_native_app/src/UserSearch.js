@@ -89,7 +89,7 @@ const UserSearch = () => {
                                 <>
                                     {emptySearchTerm ? (
                                         <Center bottom="0">
-                                            <Image style={{ width: Dimensions.get('window').width, height: Dimensions.get('window').width }} source={require('./mushroom-muted.png')} alt='Alt text'/>
+                                            <Image style={{ width: Dimensions.get('window').width, height: Dimensions.get('window').width }} source={require('./mushroom-muted.png')} alt='app logo'/>
                                         </Center>
                                     ) : (
                                         <Center>
