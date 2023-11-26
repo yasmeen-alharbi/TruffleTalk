@@ -8,13 +8,12 @@ import {
     Divider,
 } from 'native-base';
 import moment from 'moment/moment';
-import React, { useContext, useState } from 'react';
-import { Feather } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
 import { Dimensions, Image } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { Feather, Ionicons } from '@expo/vector-icons';
 
-import { AuthContext } from '../AuthProvider';
 import api from '../util/api';
+import { AuthContext } from '../AuthProvider';
 
 const Post = ({ data, likePost, showComments }) => {
     const { user } = useContext(AuthContext);

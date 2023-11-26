@@ -3,10 +3,11 @@ import {
     Button,
     HStack,
 } from 'native-base';
-import React, { useContext } from 'react';
 import { Image } from 'react-native';
+import React, { useContext } from 'react';
 import { Feather } from '@expo/vector-icons';
 import { useNavigate } from 'react-router-dom';
+
 import { AuthContext } from '../AuthProvider';
 
 const AppHeader = () => {

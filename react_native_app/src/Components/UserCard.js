@@ -1,8 +1,9 @@
+import { Feather } from '@expo/vector-icons';
 import React, { useContext, useState } from 'react';
 import { Button, HStack, Icon, Text, VStack } from 'native-base';
-import { Feather } from '@expo/vector-icons';
-import { AuthContext } from '../AuthProvider';
+
 import api from '../util/api';
+import { AuthContext } from '../AuthProvider';
 
 const UserCard = ({ userData }) => {
     const { user } = useContext(AuthContext);

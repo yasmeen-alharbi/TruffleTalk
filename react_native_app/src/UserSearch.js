@@ -1,6 +1,3 @@
-import React, { useContext, useState } from 'react';
-import AppHeader from './Components/AppHeader';
-import AppFooter from './Components/AppFooter';
 import {
     Center,
     Heading,
@@ -14,12 +11,16 @@ import {
     View,
     VStack,
 } from 'native-base';
+import { debounce } from 'lodash';
+import { Dimensions } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
+import React, { useContext, useState } from 'react';
+
 import api from './util/api';
 import { AuthContext } from './AuthProvider';
 import UserCard from './Components/UserCard';
-import { AntDesign } from '@expo/vector-icons';
-import { debounce } from 'lodash';
-import { Dimensions } from 'react-native';
+import AppFooter from './Components/AppFooter';
+import AppHeader from './Components/AppHeader';
 
 const UserSearch = () => {
     const { user } = useContext(AuthContext);
