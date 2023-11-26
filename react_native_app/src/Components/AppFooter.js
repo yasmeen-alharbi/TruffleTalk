@@ -3,10 +3,12 @@ import {
     Button,
     HStack,
 } from 'native-base';
+import {
+    Ionicons,
+    AntDesign,
+    MaterialIcons,
+} from '@expo/vector-icons';
 import React, { useContext } from 'react';
-import { Feather } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
 import  {useNavigate } from 'react-router-dom';
 
 import { AuthContext } from '../AuthProvider';
@@ -22,17 +24,27 @@ const AppFooter = () => {
         navigate('/');
     };
 
+    const goHome = () => {
+        navigate('/home');
+    };
+
+    const goCreate = () => {
+        navigate('/create');
+    };
+
     return (
         <>
             <HStack bg="primary.600" justifyContent="space-between" alignItems="center" shadow="3" pl="7" pr="5">
-                <Button>
+                <Button onPress={goHome}>
                     <Icon as={<AntDesign name="home"/>} size="8" color="primary.50"/>
                 </Button>
-                <Button>
-                    <Icon as={<Ionicons name="add"/>} size="12" color="primary.50"/>
-                </Button>
+                { user ?  (
+                    <Button onPress={goCreate}>
+                        <Icon as={<Ionicons name="add"/>} size="12" color="primary.50"/>
+                    </Button>
+                ) : null }
                 <Button onPress={goBack}>
-                    <Icon as={<Feather name="user"/>} size="8" color="primary.50"/>
+                    <Icon as={<MaterialIcons name="logout"/>} size="8" color="primary.50"/>
                 </Button>
             </HStack>
         </>

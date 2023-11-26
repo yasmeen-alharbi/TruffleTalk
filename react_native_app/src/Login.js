@@ -58,6 +58,7 @@ const Login = () => {
                 email: response.data.user.email,
                 name: response.data.user.name,
                 token: response.data.token,
+                username: response.data.user.username,
             };
 
             setError(null);

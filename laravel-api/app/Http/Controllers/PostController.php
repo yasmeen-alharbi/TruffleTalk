@@ -29,7 +29,7 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'mushroom' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:16384',
         ]);
 
         if ($request->hasFile('image')) {
@@ -57,7 +57,7 @@ class PostController extends Controller
         $posts = $this->post->newQuery()
             ->with(['comments', 'user:id,username'])
             ->withCount(['likes', 'comments'])
-            ->orderByRaw('(likes_count + (3 * comments_count)) DESC')
+            ->orderByRaw('(likes_count + (3 * comments_count)) DESC, created_at DESC')
             ->get();
 
         return PostResource::collection($posts);
@@ -123,7 +123,7 @@ class PostController extends Controller
             })
                 ->where('user_id', '!=', $currentUser->id)
                 ->withCount(['likes', 'comments'])
-                ->orderByRaw('(likes_count + (3 * comments_count)) DESC')
+                ->orderByRaw('(likes_count + (3 * comments_count)) DESC, created_at DESC')
                 ->take(100)
                 ->get();
         } else {
@@ -137,7 +137,7 @@ class PostController extends Controller
                         ->where('follower_id', $currentUser->id);
                 })
                 ->withCount(['likes', 'comments'])
-                ->orderByRaw('(likes_count + (3 * comments_count)) DESC')
+                ->orderByRaw('(likes_count + (3 * comments_count)) DESC, created_at DESC')
                 ->take(100)
                 ->get();
 
@@ -150,7 +150,7 @@ class PostController extends Controller
                     })
                     ->where('user_id', '!=', $currentUser->id)
                     ->withCount(['likes', 'comments'])
-                    ->orderByRaw('(likes_count + (3 * comments_count)) DESC')
+                    ->orderByRaw('(likes_count + (3 * comments_count)) DESC, created_at DESC')
                     ->take(100)
                     ->get();
             }
