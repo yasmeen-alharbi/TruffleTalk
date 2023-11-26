@@ -7,6 +7,7 @@ import Login from './Login';
 import StartUp from './StartUp';
 import Register from './Register';
 import CreatePost from './CreatePost';
+import UserSearch from './UserSearch';
 
 const Router = () => {
     return (
@@ -17,6 +18,7 @@ const Router = () => {
                 <Route path='/register' Component={ Register } />
                 <Route path='/home' Component={ Home } />
                 <Route path='/create' Component={ CreatePost } />
+                <Route path='/users' Component={ UserSearch }/>
             </Routes>
         </View>
     );
