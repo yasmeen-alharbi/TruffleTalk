@@ -1,10 +1,10 @@
-import React from 'react';
 import {
     Text,
     HStack,
     VStack,
     Divider,
 } from 'native-base';
+import React from 'react';
 import moment from 'moment';
 
 const Comment = ({ data }) => {
@@ -12,7 +12,7 @@ const Comment = ({ data }) => {
     const formattedDate = date.utc().format('DD/MM/YY');
 
     return (
-        <VStack justifyContent="space-between" space={1} pt={"1"}>
+        <VStack justifyContent="space-between" space={1} pt="1">
             <HStack justifyContent="space-between">
                 <Text fontSize="md" bold>
                     {`@${data.author}`}
