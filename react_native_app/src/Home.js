@@ -174,6 +174,7 @@ const Home = () => {
         api({ token: user.token })
             .post(`/posts/${commentData.postID}/comments`, { content: comment })
             .then(({ data }) => {
+                setComment('');
                 setRecommendedData(recommendedData.map((prevData) =>
                     prevData.id === commentData.postID
                         ? {...prevData, comments: data.post.comments}
@@ -194,7 +195,7 @@ const Home = () => {
 
     return (
         <View h="100%">
-            {loading ? (
+            { loading ? (
                 <VStack justifyContent="center" h="100%">
                     <HStack space={2} justifyContent="center">
                         <Spinner />
@@ -211,12 +212,12 @@ const Home = () => {
                             handleScroll();
                         }
                     }} scrollEventThrottle={2}>
-                        {feedData.length !== 0 ? (
+                        { feedData.length !== 0 ? (
                             feedData.map((data) => (
                                 <Post key={ data.id } data={ data } likePost={ () => likePost(data.id) } showComments={ showComments } />
                             ))
-                        ) : null}
-                        {showRecommended && user ? (
+                        ) : null }
+                        { showRecommended && user ? (
                             <>
                                 <Center justifyContent="space-between" pb="3" pt="2">
                                     <Text fontSize="md" color="primary.700" bold>
@@ -227,11 +228,11 @@ const Home = () => {
                                     </Text>
                                 </Center>
                                 <Divider bg="blueGray.200"/>
-                                {recommendedLoading ? (
+                                { recommendedLoading ? (
                                     <Spinner pb="2" pt="2"/>
                                 ) : (
                                     <>
-                                        {recommendedData.length !== 0 ? (
+                                        { recommendedData.length !== 0 ? (
                                             recommendedData.map((data) => (
                                                 <Post key={ data.id }
                                                       data={ data }
@@ -239,22 +240,22 @@ const Home = () => {
                                                       showComments={ showComments }
                                                 />
                                             ))
-                                        ) : null}
+                                        ) : null }
                                     </>
                                 )}
                             </>
                         ) : (
                             <>
-                                {feedData.length === 0 && recommendedData.length === 0 ? (
+                                { feedData.length === 0 && recommendedData.length === 0 ? (
                                     <Center justifyContent="space-between" pb="3" pt="2">
                                         <Text fontSize="md" color="primary.700" bold>
-                                            { user ? "Start following people to see cool posts!" : "No posts yet. Create an account to contribute!"}
+                                            { user ? "Start following people to see cool posts!" : "No posts yet. Create an account to contribute!" }
                                         </Text>
                                     </Center>
                                 ) : null }
                             </>
                         )}
-                        <Modal pt="40" isOpen={modalVisible} size="xl" onClose={ () => setModalVisible(!modalVisible) } animationPreset="slide" height="70%" avoidKeyboard>
+                        <Modal pt="40" isOpen={ modalVisible } size="xl" onClose={ () => setModalVisible(!modalVisible) } animationPreset="slide" height="70%" avoidKeyboard>
                             <Modal.Content>
                                 <Modal.CloseButton />
                                 <Modal.Header>Comments</Modal.Header>
@@ -270,9 +271,9 @@ const Home = () => {
                                     }
                                 </Modal.Body>
                                 <Modal.Footer justifyContent="space-between">
-                                    {user ? (
+                                    { user ? (
                                         <>
-                                            <FormControl w="80%" h="100%" isInvalid={commentErrors !== null}>
+                                            <FormControl w="80%" h="100%" isInvalid={ commentErrors !== null }>
                                                 <Input value={ comment } h={10} placeholder="Add a comment..." onChangeText={ onCommentChange }/>
                                                 <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
                                                     { commentErrors }
