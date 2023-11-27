@@ -8,17 +8,23 @@ import React, {
 import {
     View,
     Text,
+    Modal,
+    Input,
     VStack,
     HStack,
+    Button,
     Center,
     Spinner,
     Heading,
     Divider,
     ScrollView,
+    FormControl,
+    WarningOutlineIcon,
 } from 'native-base';
 
 import api from './util/api';
 import Post from './Components/Post';
+import Comment from './Components/Comment';
 import { AuthContext } from './AuthProvider';
 import AppHeader from './Components/AppHeader';
 import AppFooter from './Components/AppFooter';
@@ -31,8 +37,14 @@ const Home = () => {
 
     const scrollRef = useRef(true);
     const [showRecommended, setShowRecommended] = useState(false);
+
     const [recommendedData, setRecommendedData] = useState([]);
     const [recommendedLoading, setRecommendedLoading] = useState(true);
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [commentData, setCommentData] = useState({postID: null, comments: []});
+    const [comment, setComment] = useState('');
+    const [commentErrors, setCommentErrors] = useState(null);
 
     useEffect(() => {
         if (user) {
@@ -60,18 +72,24 @@ const Home = () => {
                 })
         }
     }, []);
-    
-    const showComments = () => {
-        console.log("show comments"); // TODO
+
+    const showComments = (postID, comments) => {
+        setModalVisible(true);
+        setComment('');
+        setCommentErrors(null);
+        setCommentData({postID: postID, comments: comments});
     };
 
-    /**
-     * Used with '/followed' data.
-     */
     const likePost = (postID) => {
-        const post = feedData.filter(obj => {
+        let post = feedData.filter(obj => {
             return obj.id === postID;
         });
+
+        if (post.length === 0) { // if the post is a recommended one
+            post = recommendedData.filter(obj => {
+                return obj.id === postID;
+            });
+        }
 
         if (!post[0].liked_by_current_user) {
             api({ token: user.token }).post(`/posts/${postID}/likes`)
@@ -80,6 +98,11 @@ const Home = () => {
                         prevData.id === postID
                         ? {...prevData, liked_by_current_user: true, likes_count: prevData.likes_count + 1}
                         : prevData
+                    ));
+                    setRecommendedData(recommendedData.map((prevData) =>
+                        prevData.id === postID
+                            ? {...prevData, liked_by_current_user: true, likes_count: prevData.likes_count + 1}
+                            : prevData
                     ));
                 })
                 .catch(error => {
@@ -94,39 +117,6 @@ const Home = () => {
                             ? {...prevData, liked_by_current_user: false, likes_count: prevData.likes_count - 1}
                             : prevData
                     ));
-                })
-                .catch(error => {
-                    console.error(error);
-                })
-        }
-    };
-
-    /**
-     * Used with '/recommended' data.
-     * Need this because we store total page data into two different states for followed and recommended posts.
-     * Without this, states for recommended data won't update and thus like buttons won't update.
-     */
-    const likeRecommendedPost = (postID) => {
-        const post = recommendedData.filter(obj => {
-            return obj.id === postID;
-        });
-
-        if (!post[0].liked_by_current_user) {
-            api({ token: user.token }).post(`/posts/${postID}/likes`)
-                .then(() => {
-                    setRecommendedData(recommendedData.map((prevData) =>
-                        prevData.id === postID
-                            ? {...prevData, liked_by_current_user: true, likes_count: prevData.likes_count + 1}
-                            : prevData
-                    ));
-                })
-                .catch(error => {
-                    console.error(error);
-                })
-        }
-        else {
-            api({ token: user.token }).delete(`/posts/${postID}/likes`)
-                .then(() => {
                     setRecommendedData(recommendedData.map((prevData) =>
                         prevData.id === postID
                             ? {...prevData, liked_by_current_user: false, likes_count: prevData.likes_count - 1}
@@ -175,9 +165,37 @@ const Home = () => {
         }
     });
 
+    const onCommentChange = (value) => {
+        setComment(value);
+        setCommentErrors(null);
+    }
+
+    const submitComment = () => {
+        api({ token: user.token })
+            .post(`/posts/${commentData.postID}/comments`, { content: comment })
+            .then(({ data }) => {
+                setComment('');
+                setRecommendedData(recommendedData.map((prevData) =>
+                    prevData.id === commentData.postID
+                        ? {...prevData, comments: data.post.comments}
+                        : prevData
+                ));
+                setFeedData(feedData.map((prevData) =>
+                    prevData.id === commentData.postID
+                        ? {...prevData, comments: data.post.comments}
+                        : prevData
+                ));
+
+                setCommentData({ postID: commentData.postID, comments: data.post.comments });
+            })
+            .catch(({ errors }) => {
+                setCommentErrors(errors.content);
+            })
+    };
+
     return (
         <View h="100%">
-            {loading ? (
+            { loading ? (
                 <VStack justifyContent="center" h="100%">
                     <HStack space={2} justifyContent="center">
                         <Spinner />
@@ -194,12 +212,12 @@ const Home = () => {
                             handleScroll();
                         }
                     }} scrollEventThrottle={2}>
-                        {feedData.length !== 0 ? (
+                        { feedData.length !== 0 ? (
                             feedData.map((data) => (
                                 <Post key={ data.id } data={ data } likePost={ () => likePost(data.id) } showComments={ showComments } />
                             ))
-                        ) : null}
-                        {showRecommended && user ? (
+                        ) : null }
+                        { showRecommended && user ? (
                             <>
                                 <Center justifyContent="space-between" pb="3" pt="2">
                                     <Text fontSize="md" color="primary.700" bold>
@@ -210,29 +228,69 @@ const Home = () => {
                                     </Text>
                                 </Center>
                                 <Divider bg="blueGray.200"/>
-                                {recommendedLoading ? (
+                                { recommendedLoading ? (
                                     <Spinner pb="2" pt="2"/>
                                 ) : (
                                     <>
-                                        {recommendedData.length !== 0? (
+                                        { recommendedData.length !== 0 ? (
                                             recommendedData.map((data) => (
-                                                <Post key={ data.id } data={ data } likePost={ () => likeRecommendedPost(data.id) } showComments={ showComments } />
+                                                <Post key={ data.id }
+                                                      data={ data }
+                                                      likePost={ () => likePost(data.id) }
+                                                      showComments={ showComments }
+                                                />
                                             ))
-                                        ) : null}
+                                        ) : null }
                                     </>
                                 )}
                             </>
                         ) : (
                             <>
-                                {feedData.length === 0 && recommendedData.length === 0 ? (
+                                { feedData.length === 0 && recommendedData.length === 0 ? (
                                     <Center justifyContent="space-between" pb="3" pt="2">
                                         <Text fontSize="md" color="primary.700" bold>
-                                            { user ? "Start following people to see cool posts!" : "No posts yet. Create an account to contribute!"}
+                                            { user ? "Start following people to see cool posts!" : "No posts yet. Create an account to contribute!" }
                                         </Text>
                                     </Center>
                                 ) : null }
                             </>
                         )}
+                        <Modal pt="40" isOpen={ modalVisible } size="xl" onClose={ () => setModalVisible(!modalVisible) } animationPreset="slide" height="70%" avoidKeyboard>
+                            <Modal.Content>
+                                <Modal.CloseButton />
+                                <Modal.Header>Comments</Modal.Header>
+                                <Modal.Body pt="1">
+                                    {
+                                        commentData.comments.length !== 0 ? (
+                                            commentData.comments.map((comment) => (
+                                                <Comment key={ comment.id } data={ comment }/>
+                                            ))
+                                        ) : (
+                                            <Text pt="2.5" color="primary.900">Woah, there's so mush-room in here!</Text>
+                                        )
+                                    }
+                                </Modal.Body>
+                                <Modal.Footer justifyContent="space-between">
+                                    { user ? (
+                                        <>
+                                            <FormControl w="80%" h="100%" isInvalid={ commentErrors !== null }>
+                                                <Input value={ comment } h={10} placeholder="Add a comment..." onChangeText={ onCommentChange }/>
+                                                <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                                                    { commentErrors }
+                                                </FormControl.ErrorMessage>
+                                            </FormControl>
+                                            <Button h={10} onPress={ submitComment }>
+                                                Save
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <Text color="primary.900">
+                                            Create an account to share a comment.
+                                        </Text>
+                                    )}
+                                </Modal.Footer>
+                            </Modal.Content>
+                        </Modal>
                     </ScrollView>
                     <AppFooter />
                 </>

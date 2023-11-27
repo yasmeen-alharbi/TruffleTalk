@@ -40,6 +40,10 @@ class CommentController extends Controller
             'content' => $data['content'],
         ]);
 
+        $post = $post->fresh(['comments' => function ($query) {
+            $query->orderBy('created_at', 'DESC');
+        }]);
+
         return response()->json(['post' => new PostResource($post)], 201);
     }
 

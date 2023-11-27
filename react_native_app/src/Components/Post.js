@@ -80,7 +80,7 @@ const Post = ({ data, likePost, showComments }) => {
                             { data.description }
                         </Text>
                         <HStack justifyContent="space-between">
-                            <Text pt="2" fontSize="xs" color="muted.500" onPress={showComments}>
+                            <Text pt="2" fontSize="xs" color="muted.500" onPress={() => showComments(data.id, data.comments)}>
                                 {`${data.comments.length} ${data.comments.length === 1 ? "comment" : "comments"}...`}
                             </Text>
                             <HStack justifyContent="space-between" space={1}>
