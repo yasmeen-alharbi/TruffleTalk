@@ -8,17 +8,38 @@ import {
     Divider,
 } from 'native-base';
 import moment from 'moment/moment';
-import React, { useContext } from 'react';
-import { Feather } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
 import { Dimensions, Image } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { Feather, Ionicons } from '@expo/vector-icons';
 
+import api from '../util/api';
 import { AuthContext } from '../AuthProvider';
 
 const Post = ({ data, likePost, showComments }) => {
     const { user } = useContext(AuthContext);
+    const [following, setFollowing] = useState(data.followed_by_current_user);
     const date = moment(data.created_at);
     const formattedDate = date.utc().format('DD/MM/YY');
+
+    const followUser = () => {
+        if (!following) {
+            api({ token: user.token }).post(`/users/${data.user_id}/follow`)
+                .then(() => {
+                    setFollowing(true);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        } else {
+            api({ token: user.token }).delete(`/users/${data.user_id}/unfollow`)
+                .then(() => {
+                    setFollowing(false);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    };
 
     return (
         <>
@@ -34,15 +55,15 @@ const Post = ({ data, likePost, showComments }) => {
                     </VStack>
                     { user && user.id !== data.user_id ? (
                         <>
-                            <Button size={10} alignItems="center">
-                                <Icon as={<Feather name={`${data.followed_by_current_user ? "user-check" : "user-plus"}`}/>} size="5" color="primary.50"/>
+                            <Button alignItems="center" onPress={followUser} borderWidth="1" borderColor="primary.500" bg={`${following ? "primary.500" : "white"}`} size={10}>
+                                <Icon as={<Feather name={`${following ? "user-check" : "user-plus"}`}/>} size="5" color={`${following ? "white" : "primary.500"}`}/>
                             </Button>
                         </>
                     ) : null}
                 </HStack>
                 <Divider bg="blueGray.200"/>
                 <Box w={ Dimensions.get('window').width } h={ Dimensions.get('window').width } bg="gray.100">
-                    <Image width="100%" height="100%" resizeMode="contain" source={{ uri: data.image }} alt='Alt text'/>
+                    <Image style={{ width: "100%", height: "100%"}} resizeMode="contain" source={{ uri: data.image }} alt='mushroom post image'/>
                 </Box>
                 <Divider bg="blueGray.200"/>
                 <VStack pl="3" pt="3" pb="2" pr="3">

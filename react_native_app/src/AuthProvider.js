@@ -10,14 +10,15 @@ export const AuthProvider = ({ children }) => {
     const [error, setError] = useState(null);
 
     const logOut = () => {
-        setUser(null); // Just in case anything fails
-
         api({ token: user.token }).delete('/auth/token')
             .then(() => {
                 SecureStore.deleteItemAsync('user');
             })
             .catch(({ errors }) => {
                 setError(errors);
+            })
+            .finally(() => {
+                setUser(null); // Just in case anything fails
             });
     };
 

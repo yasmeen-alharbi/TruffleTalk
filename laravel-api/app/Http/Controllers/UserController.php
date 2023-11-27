@@ -2,18 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class FollowerController extends Controller
+class UserController extends Controller
 {
     /**
-     * FollowerController constructor.
+     * UserController constructor.
      *
      * @param User $user
      */
     public function __construct(protected User $user) {}
+
+    /**
+     * Gets all the users; filters by search term if there
+     * is one provided.
+     *
+     * @param Request $request
+     * @return AnonymousResourceCollection
+     */
+    public function index(Request $request): AnonymousResourceCollection
+    {
+        $userId = $request->user()->id;
+        $searchTerm = null;
+
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+        }
+
+        $users = $this->user->newQuery()
+            ->where('id', '!=', $userId) // Exclude the current user
+            ->when($searchTerm, function ($query) use ($searchTerm) {
+                $query->where(function ($innerQuery) use ($searchTerm) {
+                    $innerQuery->where('name', 'LIKE', "%$searchTerm%")
+                        ->orWhere('username', 'LIKE', "%$searchTerm%");
+                });
+            })
+            ->get();
+
+        return UserResource::collection($users);
+    }
 
     /**
      * Follow a given user.
@@ -43,6 +74,7 @@ class FollowerController extends Controller
 
         return response()->json(['message' => 'Successfully followed the user']);
     }
+
 
     /**
      * Unfollow a given user.

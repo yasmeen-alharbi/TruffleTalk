@@ -29,7 +29,7 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'mushroom' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:16384',
         ]);
 
         if ($request->hasFile('image')) {
