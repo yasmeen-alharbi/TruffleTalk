@@ -34,7 +34,7 @@ const AppFooter = () => {
 
     return (
         <>
-            <HStack bg="primary.600" justifyContent="space-between" alignItems="center" shadow="3" pl="7" pr="5">
+            <HStack bg="primary.600" justifyContent="space-between" alignItems="center" shadow="3" pl="7" pr="5" height="8%">
                 <Button onPress={goHome}>
                     <Icon as={<AntDesign name="home"/>} size="8" color="primary.50"/>
                 </Button>
