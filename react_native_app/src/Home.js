@@ -129,6 +129,55 @@ const Home = () => {
         }
     };
 
+    const followUser = (userId) => {
+        let posts = feedData.filter(post => {
+            return post.user_id === userId;
+        });
+
+        if (posts.length === 0) { // if the post is a recommended one
+            posts = recommendedData.filter(post => {
+                return post.user_id === userId;
+            });
+        }
+
+        if (!posts[0].followed_by_current_user) {
+            api({ token: user.token }).post(`/users/${userId}/follow`)
+                .then(() => {
+                    setFeedData(feedData.map((prevData) =>
+                        prevData.user_id === userId
+                            ? {...prevData, followed_by_current_user: true}
+                            : prevData
+                    ));
+                    setRecommendedData(recommendedData.map((prevData) =>
+                        prevData.user_id === userId
+                            ? {...prevData, followed_by_current_user: true}
+                            : prevData
+                    ));
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+        else {
+            api({ token: user.token }).delete(`/users/${userId}/unfollow`)
+                .then(() => {
+                    setFeedData(feedData.map((prevData) =>
+                        prevData.user_id === userId
+                            ? {...prevData, followed_by_current_user: false}
+                            : prevData
+                    ));
+                    setRecommendedData(recommendedData.map((prevData) =>
+                        prevData.user_id === userId
+                            ? {...prevData, followed_by_current_user: false}
+                            : prevData
+                    ));
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    };
+
     /**
      * Checks whether scroll position is close to the bottom of the view.
      * Used to determine the state of the recommended feed.
@@ -214,7 +263,13 @@ const Home = () => {
                     }} scrollEventThrottle={2}>
                         { feedData.length !== 0 ? (
                             feedData.map((data) => (
-                                <Post key={ data.id } data={ data } likePost={ () => likePost(data.id) } showComments={ showComments } />
+                                <Post
+                                    key={ data.id }
+                                    data={ data }
+                                    likePost={ () => likePost(data.id) }
+                                    showComments={ showComments }
+                                    followUser={ () => followUser(data.user_id)}
+                                />
                             ))
                         ) : null }
                         { showRecommended && user ? (
@@ -234,10 +289,12 @@ const Home = () => {
                                     <>
                                         { recommendedData.length !== 0 ? (
                                             recommendedData.map((data) => (
-                                                <Post key={ data.id }
-                                                      data={ data }
-                                                      likePost={ () => likePost(data.id) }
-                                                      showComments={ showComments }
+                                                <Post
+                                                    key={ data.id }
+                                                    data={ data }
+                                                    likePost={ () => likePost(data.id) }
+                                                    showComments={ showComments }
+                                                    followUser={ () => followUser(data.user_id) }
                                                 />
                                             ))
                                         ) : null }

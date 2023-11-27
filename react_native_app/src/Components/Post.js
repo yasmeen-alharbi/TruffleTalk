@@ -8,38 +8,16 @@ import {
     Divider,
 } from 'native-base';
 import moment from 'moment/moment';
+import React, { useContext } from 'react';
 import { Dimensions, Image } from 'react-native';
-import React, { useContext, useState } from 'react';
 import { Feather, Ionicons } from '@expo/vector-icons';
 
-import api from '../util/api';
 import { AuthContext } from '../AuthProvider';
 
-const Post = ({ data, likePost, showComments }) => {
+const Post = ({ data, likePost, showComments, followUser }) => {
     const { user } = useContext(AuthContext);
-    const [following, setFollowing] = useState(data.followed_by_current_user);
     const date = moment(data.created_at);
     const formattedDate = date.utc().format('DD/MM/YY');
-
-    const followUser = () => {
-        if (!following) {
-            api({ token: user.token }).post(`/users/${data.user_id}/follow`)
-                .then(() => {
-                    setFollowing(true);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        } else {
-            api({ token: user.token }).delete(`/users/${data.user_id}/unfollow`)
-                .then(() => {
-                    setFollowing(false);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
-    };
 
     return (
         <>
@@ -55,8 +33,8 @@ const Post = ({ data, likePost, showComments }) => {
                     </VStack>
                     { user && user.id !== data.user_id ? (
                         <>
-                            <Button alignItems="center" onPress={followUser} borderWidth="1" borderColor="primary.500" bg={`${following ? "primary.500" : "white"}`} size={10}>
-                                <Icon as={<Feather name={`${following ? "user-check" : "user-plus"}`}/>} size="5" color={`${following ? "white" : "primary.500"}`}/>
+                            <Button alignItems="center" onPress={followUser} borderWidth="1" borderColor="primary.500" bg={`${data.followed_by_current_user ? "primary.500" : "white"}`} size={10}>
+                                <Icon as={<Feather name={`${data.followed_by_current_user ? "user-check" : "user-plus"}`}/>} size="5" color={`${data.followed_by_current_user ? "white" : "primary.500"}`}/>
                             </Button>
                         </>
                     ) : null}
