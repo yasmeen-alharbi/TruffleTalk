@@ -47,6 +47,10 @@ const Home = () => {
     const [commentErrors, setCommentErrors] = useState(null);
 
     useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
         if (user) {
             api({ token: user.token }).get('/followed/posts')
                 .then(({ data }) => {
@@ -71,7 +75,15 @@ const Home = () => {
                     setLoading(false);
                 })
         }
-    }, []);
+    };
+
+    const handleRefresh = () => {
+        // Simulate a "refresh" by setting loading state to true
+        setLoading(true);
+
+        // Trigger a re-fetch of the data
+        fetchData();
+    };
 
     const showComments = (postID, comments) => {
         setModalVisible(true);
@@ -245,14 +257,18 @@ const Home = () => {
     return (
         <View h="100%">
             { loading ? (
-                <VStack justifyContent="center" h="100%">
-                    <HStack space={2} justifyContent="center">
-                        <Spinner />
-                        <Heading color="primary.500" fontSize="md">
-                            Loading
-                        </Heading>
-                    </HStack>
-                </VStack>
+                <>
+                    <AppHeader />
+                    <VStack justifyContent="center" h="77%">
+                        <HStack space={2} justifyContent="center">
+                            <Spinner />
+                            <Heading color="primary.500" fontSize="md">
+                                Loading
+                            </Heading>
+                        </HStack>
+                    </VStack>
+                    <AppFooter />
+                </>
             ) : (
                 <>
                     <AppHeader />
@@ -349,7 +365,7 @@ const Home = () => {
                             </Modal.Content>
                         </Modal>
                     </ScrollView>
-                    <AppFooter />
+                    <AppFooter handleRefresh={ handleRefresh }/>
                 </>
             )}
         </View>

@@ -13,7 +13,7 @@ import  {useNavigate } from 'react-router-dom';
 
 import { AuthContext } from '../AuthProvider';
 
-const AppFooter = () => {
+const AppFooter = ({ handleRefresh = null }) => {
     const { user, logOut } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -25,6 +25,7 @@ const AppFooter = () => {
     };
 
     const goHome = () => {
+        handleRefresh? handleRefresh() : null;
         navigate('/home');
     };
 
