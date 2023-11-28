@@ -47,6 +47,10 @@ const Home = () => {
     const [commentErrors, setCommentErrors] = useState(null);
 
     useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
         if (user) {
             api({ token: user.token }).get('/followed/posts')
                 .then(({ data }) => {
@@ -71,7 +75,15 @@ const Home = () => {
                     setLoading(false);
                 })
         }
-    }, []);
+    };
+
+    const handleRefresh = () => {
+        // Simulate a "refresh" by setting loading state to true
+        setLoading(true);
+
+        // Trigger a re-fetch of the data
+        fetchData();
+    };
 
     const showComments = (postID, comments) => {
         setModalVisible(true);
@@ -126,6 +138,55 @@ const Home = () => {
                 .catch(error => {
                     console.error(error);
                 })
+        }
+    };
+
+    const followUser = (userId) => {
+        let posts = feedData.filter(post => {
+            return post.user_id === userId;
+        });
+
+        if (posts.length === 0) { // if the post is a recommended one
+            posts = recommendedData.filter(post => {
+                return post.user_id === userId;
+            });
+        }
+
+        if (!posts[0].followed_by_current_user) {
+            api({ token: user.token }).post(`/users/${userId}/follow`)
+                .then(() => {
+                    setFeedData(feedData.map((prevData) =>
+                        prevData.user_id === userId
+                            ? {...prevData, followed_by_current_user: true}
+                            : prevData
+                    ));
+                    setRecommendedData(recommendedData.map((prevData) =>
+                        prevData.user_id === userId
+                            ? {...prevData, followed_by_current_user: true}
+                            : prevData
+                    ));
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+        else {
+            api({ token: user.token }).delete(`/users/${userId}/unfollow`)
+                .then(() => {
+                    setFeedData(feedData.map((prevData) =>
+                        prevData.user_id === userId
+                            ? {...prevData, followed_by_current_user: false}
+                            : prevData
+                    ));
+                    setRecommendedData(recommendedData.map((prevData) =>
+                        prevData.user_id === userId
+                            ? {...prevData, followed_by_current_user: false}
+                            : prevData
+                    ));
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         }
     };
 
@@ -196,14 +257,18 @@ const Home = () => {
     return (
         <View h="100%">
             { loading ? (
-                <VStack justifyContent="center" h="100%">
-                    <HStack space={2} justifyContent="center">
-                        <Spinner />
-                        <Heading color="primary.500" fontSize="md">
-                            Loading
-                        </Heading>
-                    </HStack>
-                </VStack>
+                <>
+                    <AppHeader />
+                    <VStack justifyContent="center" h="77%">
+                        <HStack space={2} justifyContent="center">
+                            <Spinner />
+                            <Heading color="primary.500" fontSize="md">
+                                Loading
+                            </Heading>
+                        </HStack>
+                    </VStack>
+                    <AppFooter />
+                </>
             ) : (
                 <>
                     <AppHeader />
@@ -214,7 +279,13 @@ const Home = () => {
                     }} scrollEventThrottle={2}>
                         { feedData.length !== 0 ? (
                             feedData.map((data) => (
-                                <Post key={ data.id } data={ data } likePost={ () => likePost(data.id) } showComments={ showComments } />
+                                <Post
+                                    key={ data.id }
+                                    data={ data }
+                                    likePost={ () => likePost(data.id) }
+                                    showComments={ showComments }
+                                    followUser={ () => followUser(data.user_id)}
+                                />
                             ))
                         ) : null }
                         { showRecommended && user ? (
@@ -234,10 +305,12 @@ const Home = () => {
                                     <>
                                         { recommendedData.length !== 0 ? (
                                             recommendedData.map((data) => (
-                                                <Post key={ data.id }
-                                                      data={ data }
-                                                      likePost={ () => likePost(data.id) }
-                                                      showComments={ showComments }
+                                                <Post
+                                                    key={ data.id }
+                                                    data={ data }
+                                                    likePost={ () => likePost(data.id) }
+                                                    showComments={ showComments }
+                                                    followUser={ () => followUser(data.user_id) }
                                                 />
                                             ))
                                         ) : null }
@@ -292,7 +365,7 @@ const Home = () => {
                             </Modal.Content>
                         </Modal>
                     </ScrollView>
-                    <AppFooter />
+                    <AppFooter handleRefresh={ handleRefresh }/>
                 </>
             )}
         </View>

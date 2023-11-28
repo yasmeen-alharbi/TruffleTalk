@@ -13,7 +13,7 @@ import  {useNavigate } from 'react-router-dom';
 
 import { AuthContext } from '../AuthProvider';
 
-const AppFooter = () => {
+const AppFooter = ({ handleRefresh = null }) => {
     const { user, logOut } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -25,6 +25,7 @@ const AppFooter = () => {
     };
 
     const goHome = () => {
+        handleRefresh? handleRefresh() : null;
         navigate('/home');
     };
 
@@ -34,7 +35,7 @@ const AppFooter = () => {
 
     return (
         <>
-            <HStack bg="primary.600" justifyContent="space-between" alignItems="center" shadow="3" pl="7" pr="5" height="8%">
+            <HStack bg="primary.600" justifyContent="space-between" alignItems="center" shadow="3" pl="7" pr="5" height={user ? null : "8%"}>
                 <Button onPress={goHome}>
                     <Icon as={<AntDesign name="home"/>} size="8" color="primary.50"/>
                 </Button>
